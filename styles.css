@@ -1878,7 +1878,7 @@ footer > span {
   .masthead nav a {
     position: relative;
     flex: 0 0 auto;
-    padding: 0 8px;
+    padding: 0 14px;
     font-size: 0.58rem;
     letter-spacing: 0.06em;
     white-space: nowrap;
@@ -1887,7 +1887,7 @@ footer > span {
   .masthead nav a + a::before {
     position: absolute;
     top: 50%;
-    left: -2px;
+    left: 0;
     color: var(--blood);
     content: "✷";
     font-size: 0.55rem;
@@ -2055,7 +2055,7 @@ footer > span {
   }
 
   .masthead nav a {
-    padding: 0 7px;
+    padding: 0 12px;
     font-size: 0.52rem;
   }
 
