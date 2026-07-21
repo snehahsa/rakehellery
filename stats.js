@@ -838,18 +838,18 @@
       if (refreshBtn) {
         refreshBtn.disabled = true;
         const label = refreshBtn.querySelector(".seat-refresh-text");
-        if (label) label.textContent = "Refreshing";
-      }
-      try {
-        await loadStats(ca);
-      } finally {
-        refreshing = false;
-        if (refreshBtn) {
-          refreshBtn.disabled = false;
-          const label = refreshBtn.querySelector(".seat-refresh-text");
-          if (label) label.textContent = "Refresh";
+          if (label) label.textContent = "Renewing";
         }
-      }
+        try {
+          await loadStats(ca);
+        } finally {
+          refreshing = false;
+          if (refreshBtn) {
+            refreshBtn.disabled = false;
+            const label = refreshBtn.querySelector(".seat-refresh-text");
+            if (label) label.textContent = "Renew";
+          }
+        }
     };
 
     const boot = () => {

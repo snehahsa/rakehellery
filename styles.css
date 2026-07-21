@@ -1136,59 +1136,63 @@ blockquote cite {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  margin: 0 auto 14px;
-  padding: 5px 12px 4px;
-  border: 1px solid rgba(196, 164, 110, 0.45);
-  border-radius: 999px;
-  color: #d7c49a;
-  background:
-    linear-gradient(180deg, rgba(90, 58, 32, 0.55), rgba(20, 12, 8, 0.85));
+  gap: 8px;
+  margin: 2px auto 16px;
+  padding: 6px 14px 5px;
+  border: 0;
+  border-radius: 0;
+  color: var(--gold);
+  background: transparent;
   box-shadow:
-    inset 0 1px 0 rgba(255, 236, 190, 0.12),
-    0 0 0 1px rgba(0, 0, 0, 0.35);
-  font-family: "Cinzel", Georgia, serif;
-  font-size: 0.58rem;
-  font-weight: 500;
-  letter-spacing: 0.14em;
+    inset 0 0 0 1px rgba(196, 164, 110, 0.55),
+    inset 0 0 0 3px rgba(17, 12, 9, 0.95),
+    inset 0 0 0 4px rgba(167, 131, 71, 0.35);
+  font-family: "IM Fell English SC", "Cinzel", Georgia, serif;
+  font-size: 0.6rem;
+  font-weight: 400;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   cursor: pointer;
   transition:
-    color 0.15s ease,
-    border-color 0.15s ease,
-    background 0.15s ease,
-    transform 0.15s ease;
+    color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
 }
 
 .seat-refresh-glyph {
   display: inline-block;
-  font-size: 0.78rem;
+  color: #c9a36a;
+  font-family: "UnifrakturCook", "IM Fell English", serif;
+  font-size: 0.95rem;
   line-height: 1;
-  transition: transform 0.35s ease;
+  transition: transform 0.45s ease;
 }
 
 .seat-refresh:hover:not(:disabled) {
   color: #fff1d2;
-  border-color: rgba(234, 219, 183, 0.75);
-  background:
-    linear-gradient(180deg, rgba(111, 23, 23, 0.55), rgba(20, 12, 8, 0.9));
+  background: rgba(90, 28, 20, 0.35);
+  box-shadow:
+    inset 0 0 0 1px rgba(234, 219, 183, 0.75),
+    inset 0 0 0 3px rgba(17, 12, 9, 0.95),
+    inset 0 0 0 4px rgba(167, 131, 71, 0.55);
 }
 
 .seat-refresh:hover:not(:disabled) .seat-refresh-glyph {
   transform: rotate(180deg);
+  color: var(--gold);
 }
 
 .seat-refresh:disabled {
-  opacity: 0.55;
+  opacity: 0.5;
   cursor: wait;
 }
 
 .seat-refresh:disabled .seat-refresh-glyph {
-  animation: seat-refresh-spin 0.8s linear infinite;
+  animation: seat-refresh-spin 1.1s linear infinite;
 }
 
 .live-ledger[data-loading="1"] .seat-refresh {
-  opacity: 0.55;
+  opacity: 0.5;
 }
 
 @keyframes seat-refresh-spin {
