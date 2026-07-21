@@ -854,6 +854,10 @@ blockquote cite {
     var(--night);
 }
 
+.dark-section.first-panel {
+  padding-top: 150px;
+}
+
 .dark-section::before {
   position: absolute;
   inset: 18px;
@@ -2025,6 +2029,10 @@ footer > span {
 
   .dark-section {
     padding: 95px 28px;
+  }
+
+  .dark-section.first-panel {
+    padding-top: 110px;
   }
 
   .game-grid {
