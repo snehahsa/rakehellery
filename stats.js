@@ -838,7 +838,7 @@
       if (refreshBtn) {
         refreshBtn.disabled = true;
         const label = refreshBtn.querySelector(".seat-refresh-text");
-          if (label) label.textContent = "Renewing";
+          if (label) label.textContent = "Refreshing";
         }
         try {
           await loadStats(ca);
@@ -847,7 +847,7 @@
           if (refreshBtn) {
             refreshBtn.disabled = false;
             const label = refreshBtn.querySelector(".seat-refresh-text");
-            if (label) label.textContent = "Renew";
+            if (label) label.textContent = "Refresh";
           }
         }
     };
