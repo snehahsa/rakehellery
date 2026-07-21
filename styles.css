@@ -59,7 +59,7 @@ body::after {
 
 .paper-noise {
   position: fixed;
-  z-index: 100;
+  z-index: 40;
   inset: 0;
   pointer-events: none;
   opacity: 0.19;
@@ -151,8 +151,9 @@ a {
 
 .masthead {
   position: fixed;
-  z-index: 70;
+  z-index: 200;
   top: 0;
+  right: 0;
   left: 0;
   display: grid;
   width: 100%;
@@ -160,8 +161,9 @@ a {
   align-items: center;
   gap: 20px;
   padding: 14px max(24px, calc((100vw - 1320px) / 2));
+  padding-top: calc(14px + env(safe-area-inset-top, 0px));
   border-bottom: 1px solid rgba(38, 23, 15, 0.35);
-  background: rgba(217, 197, 154, 0.92);
+  background: rgba(217, 197, 154, 0.97);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
 }
@@ -855,7 +857,7 @@ blockquote cite {
 }
 
 .dark-section.first-panel {
-  padding-top: 150px;
+  padding-top: calc(150px + env(safe-area-inset-top, 0px));
 }
 
 .dark-section::before {
@@ -1851,17 +1853,42 @@ footer > span {
 
 @media (max-width: 800px) {
   .masthead {
-    grid-template-columns: auto 1fr;
-    gap: 12px;
-    padding: 12px 16px;
+    grid-template-columns: auto 1fr auto;
+    gap: 10px;
+    padding: 10px 14px;
+    padding-top: calc(10px + env(safe-area-inset-top, 0px));
   }
 
   .masthead nav {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: center;
+    gap: 10px;
+    min-width: 0;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .masthead nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .masthead nav a {
+    flex: 0 0 auto;
+    font-size: 0.58rem;
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+  }
+
+  .masthead nav a span {
     display: none;
   }
 
   .small-cta {
     justify-self: end;
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
   }
 
   .hero {
@@ -1996,20 +2023,29 @@ footer > span {
 
   .masthead {
     width: 100%;
-    grid-template-columns: 44px minmax(0, 1fr);
-    gap: 12px;
-    padding: 10px 14px;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 8px;
+    padding: 10px 12px;
+    padding-top: calc(10px + env(safe-area-inset-top, 0px));
   }
 
   .masthead .sigil-link {
-    width: 44px;
-    height: 44px;
+    width: 40px;
+    height: 40px;
+  }
+
+  .masthead nav {
+    gap: 8px;
+  }
+
+  .masthead nav a {
+    font-size: 0.52rem;
   }
 
   .small-cta {
-    max-width: 100%;
+    max-width: 4.5rem;
     overflow: hidden;
-    font-size: 0.65rem;
+    font-size: 0.58rem;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
@@ -2070,7 +2106,7 @@ footer > span {
   }
 
   .dark-section.first-panel {
-    padding-top: 110px;
+    padding-top: calc(120px + env(safe-area-inset-top, 0px));
   }
 
   .game-grid {
