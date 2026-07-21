@@ -2,7 +2,7 @@
   // 1) Preferred: Alchemy free RPC (paste full HTTPS URL).
   //    Get one in ~1 min: https://dashboard.alchemy.com → app → Ethereum → API key
   //    Optional overrides: ?alchemy=https://eth-mainnet.g.alchemy.com/v2/KEY
-  //                      or localStorage rakehell-alchemy
+  //                      or localStorage rakehellery-alchemy
   const ALCHEMY_RPC_DEFAULT =
     "https://eth-mainnet.g.alchemy.com/v2/9poJOAJQy5Got7Wpv8cO7";
   // 2) Fallback only: Etherscan (rate-limited — causes blank winners/seats)
@@ -12,8 +12,8 @@
   const Q96 = 2n ** 96n;
   const PLAYERS = 6;
   const ZERO = "0x0000000000000000000000000000000000000000";
-  const STORAGE_KEY = "rakehell-ca";
-  const ALCHEMY_KEY = "rakehell-alchemy";
+  const STORAGE_KEY = "rakehellery-ca";
+  const ALCHEMY_KEY = "rakehellery-alchemy";
   // Change this when the real CA is live. Optional override: ?ca=0x...
   const CONTRACT_ADDRESS = "0xDc06B8DD02A9e6a5eD17818c873743496C6f67c7";
   const BURN_SCAN_CAP = 20;
@@ -484,8 +484,8 @@
           ? decodeUint(base[3].returnData)
           : 18n;
       const symbol = base[4].success
-        ? decodeString(base[4].returnData) || "EXCESS"
-        : "EXCESS";
+        ? decodeString(base[4].returnData) || "VICE"
+        : "VICE";
       const costUsdX96 = decodeUint(base[5].returnData);
       const entryTokens =
         base[6].success &&

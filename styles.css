@@ -300,10 +300,10 @@ a {
   margin: -12px 0 -4px;
   color: var(--ink);
   font-family: "UnifrakturCook", "Old English Text MT", serif;
-  font-size: clamp(6rem, 15vw, 12rem);
+  font-size: clamp(3.6rem, 11vw, 8.5rem);
   font-weight: 700;
-  letter-spacing: -0.055em;
-  line-height: 0.9;
+  letter-spacing: -0.04em;
+  line-height: 0.92;
   text-shadow: 1px 2px 0 rgba(255, 249, 220, 0.2);
 }
 
@@ -1767,7 +1767,7 @@ footer > span {
   }
 
   .hero h1 {
-    font-size: clamp(5.4rem, 24vw, 8rem);
+    font-size: clamp(3.2rem, 14vw, 6rem);
   }
 
   .hero-art {
@@ -1910,8 +1910,8 @@ footer > span {
 
   .hero h1 {
     max-width: 100%;
-    font-size: clamp(4.4rem, 19vw, 5.2rem);
-    letter-spacing: -0.075em;
+    font-size: clamp(2.8rem, 12vw, 4.2rem);
+    letter-spacing: -0.04em;
   }
 
   .ticker {

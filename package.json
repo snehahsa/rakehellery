@@ -1,8 +1,8 @@
 {
-  "name": "rakehell",
+  "name": "rakehellery",
   "private": true,
   "version": "1.0.0",
-  "description": "Rakehell ($VICE) — on-chain deflationary 6-player game",
+  "description": "Rakehellery ($VICE) — on-chain deflationary 6-player game",
   "scripts": {
     "start": "serve . -l tcp://0.0.0.0:$PORT --no-port-switching"
   },

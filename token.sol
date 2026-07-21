@@ -1,4 +1,4 @@
-// https://debauchery.io
+// Rakehellery ($VICE)
 // https://x.com/EthExcess
 // https://t.me/DebaucheryExcess
 //
@@ -66,7 +66,7 @@ library PoolAddress {
   }
 }
 
-contract Debauchery is ERC20, Ownable {
+contract Rakehellery is ERC20, Ownable {
   uint8 constant PLAYERS_PER_GAME = 6;
   // Pot split: winner 10/18 (~55.6%), runner-up 3/18 (~16.7%), rest burned (~27.8%)
   // On a $180 table (6 × $30): $100 / $30 / $50 burn
@@ -115,7 +115,7 @@ contract Debauchery is ERC20, Ownable {
     uint256 _cost
   );
 
-  constructor() ERC20('Debauchery', 'EXCESS') {
+  constructor() ERC20('Rakehellery', 'VICE') {
     _creator = _msgSender();
     _activity = block.timestamp;
     _mint(_creator, 10_000_000_000 * 10 ** 18);
