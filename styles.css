@@ -1923,6 +1923,28 @@ footer > span {
     font-size: 16px;
   }
 
+  .seat-ledger {
+    padding: 12px 6px 8px;
+  }
+
+  .seat-table th,
+  .seat-table td {
+    padding: 6px 2px;
+  }
+
+  .seat-addr {
+    font-size: 0.62rem;
+  }
+
+  .seat-player {
+    font-size: 0.58rem;
+  }
+
+  .seat-state {
+    font-size: 0.48rem;
+    letter-spacing: 0.04em;
+  }
+
   .masthead {
     width: 100%;
     grid-template-columns: 44px minmax(0, 1fr);
@@ -2032,6 +2054,87 @@ footer > span {
 
   .live-ledger {
     padding: 28px 16px 22px;
+  }
+
+  .seat-ledger {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    padding: 14px 8px 10px;
+    box-sizing: border-box;
+  }
+
+  .seat-table {
+    width: 100%;
+  }
+
+  .seat-table th,
+  .seat-table td {
+    padding: 7px 3px;
+  }
+
+  .seat-table th {
+    font-size: 0.48rem;
+    letter-spacing: 0.08em;
+  }
+
+  .seat-table th:nth-child(1),
+  .seat-table td:nth-child(1) {
+    width: 11%;
+  }
+
+  .seat-table th:nth-child(2),
+  .seat-table td:nth-child(2) {
+    width: 34%;
+  }
+
+  .seat-table th:nth-child(3),
+  .seat-table td:nth-child(3) {
+    width: 35%;
+  }
+
+  .seat-table th:nth-child(4),
+  .seat-table td:nth-child(4) {
+    width: 20%;
+  }
+
+  .seat-num {
+    font-size: 0.75rem;
+  }
+
+  .seat-addr-cell,
+  .seat-player-cell {
+    overflow: hidden;
+    max-width: 0;
+  }
+
+  .seat-addr {
+    font-size: 0.68rem;
+    letter-spacing: 0;
+  }
+
+  .seat-copy {
+    margin-left: 3px;
+    font-size: 0.65rem;
+  }
+
+  .seat-player {
+    display: block;
+    overflow: hidden;
+    font-size: 0.64rem;
+    letter-spacing: 0;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .seat-state {
+    font-size: 0.52rem;
+    letter-spacing: 0.06em;
+  }
+
+  .seat-board-hint {
+    padding: 0 4px;
+    font-size: 0.62rem;
   }
 
   .live-hero-val {
