@@ -1059,6 +1059,19 @@ blockquote cite {
   text-transform: uppercase;
 }
 
+.led-sub .led-amt {
+  display: inline-block;
+  margin: 0 0.05em;
+  color: var(--gold);
+  font-family: "Cinzel", Georgia, serif;
+  font-size: 1.15em;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  font-variant-numeric: lining-nums tabular-nums;
+  text-shadow: 0 0 12px rgba(167, 131, 71, 0.35);
+  vertical-align: baseline;
+}
+
 @keyframes led-blink {
   0%,
   72% {
