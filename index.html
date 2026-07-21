@@ -106,7 +106,7 @@
           <p class="drop-cap">
             Rakehellery is a 6-player on-chain game built into CA. Entry is
             <strong>$30 worth of tokens</strong> per seat. You pick an empty
-            seat by sending tokens to that seat address. Your entry is burned as
+            seat by sending tokens to that seat address. Your entry is burnt as
             the stake.
           </p>
 
@@ -139,9 +139,9 @@
 
           <p>
             When all six seats are filled ($180 pool), the game waits. The next
-            buy/sell ≥ $60 settles it: 1st gets
+            buy/sell settles it: 1st gets
             <strong>$100</strong> worth of tokens, 2nd gets a full
-            <strong>$30</strong> refund, and <strong>$50</strong> worth burns
+            <strong>$30</strong> refund and <strong>$50</strong> worth burns
             forever. Fully random. Fully degen.
           </p>
         </div>
@@ -154,9 +154,8 @@
               <div class="roman">I</div>
               <h3>Pick a seat</h3>
               <p>
-                Send any tiny amount of the token to seat
-                <code>0x…0001</code>–<code>0x…0006</code>. One empty seat per
-                wallet per game.
+                Send any tiny amount of the token to an open seat address
+                eg: Seat #3 <code>0x000…0003</code>. Must check if Open but if not, No tokens are burnt
               </p>
             </article>
             <article>
@@ -164,24 +163,23 @@
               <h3>Entry burns</h3>
               <p>
                 Entry fee is <strong>$30</strong> worth of tokens. The contract
-                burns that full amount from your balance. The first player locks
-                the token price for the whole table.
+                burns that specific amount from your balance automatically when you pick a seat. 
               </p>
             </article>
             <article>
               <div class="roman">III</div>
               <h3>Wait for a trade</h3>
               <p>
-                After six seats fill, winners are not drawn yet. A Uniswap buy
-                or sell ≥ $60 (2× entry) settles the game.
+                After all 6 seats fill, A buy
+                or sell settles the winners on-chain, built into the CA. Fully Fair and Random.
               </p>
             </article>
             <article>
               <div class="roman">IV</div>
               <h3>Winners paid</h3>
               <p>
-                1st is minted <strong>$100</strong> worth of tokens, 2nd
-                <strong>$30</strong>. The last <strong>$50</strong> stays burned
+                1st winner gets <strong>$100</strong> worth of tokens, 2nd gets 
+                <strong>$30</strong> Fully refunded. The last <strong>$50</strong> is burnt
                 forever.
               </p>
             </article>
@@ -395,8 +393,8 @@
               <span class="live-metric-val" id="stat-pool">—</span>
             </div>
             <div class="live-metric">
-              <span class="live-metric-key">Burned</span>
-              <span class="live-metric-val accent" id="stat-burned">—</span>
+              <span class="live-metric-key">Burnt</span>
+              <span class="live-metric-val accent" id="stat-burnt">—</span>
             </div>
             <div class="live-metric">
               <span class="live-metric-key">Supply</span>
@@ -465,7 +463,7 @@
           </div>
           <div class="tally">
             <span>$50</span>
-            <p>Of each pool stays burned</p>
+            <p>Of each pool stays burnt</p>
           </div>
         </div>
 
@@ -571,6 +569,6 @@
     </footer>
 
     <script src="./script.js?v=5"></script>
-    <script src="./stats.js?v=17"></script>
+    <script src="./stats.js?v=18"></script>
   </body>
 </html>

@@ -786,7 +786,7 @@
           : "—",
       );
       setText(
-        "stat-burned",
+        "stat-burnt",
         burned > 0n
           ? `${formatTokens(burned, decimals)} ${symbol}${
               currentGame > BURN_SCAN_CAP ? "+" : ""
