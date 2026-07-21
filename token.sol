@@ -1,6 +1,6 @@
 // Rakehellery ($VICE)
-// https://x.com/EthExcess
-// https://t.me/DebaucheryExcess
+// https://x.com/rakehellery
+// https://t.me/rakehellery
 //
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.7.6;
