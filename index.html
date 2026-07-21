@@ -1,0 +1,546 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Rakehell ($VICE) — 6-player on-chain game. Enter a seat, entries burn, Uniswap trade settles, two winners get paid."
+    />
+    <meta name="theme-color" content="#2a1b13" />
+    <title>Rakehell — $VICE</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=Libre+Baskerville:wght@400;700&family=UnifrakturCook:wght@700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css?v=16" />
+  </head>
+  <body>
+    <div class="paper-noise" aria-hidden="true"></div>
+    <div class="ink-cursor" aria-hidden="true"></div>
+    <div class="ink-progress" aria-hidden="true"><i></i></div>
+    <div class="ink-blot ink-blot-1" aria-hidden="true"></div>
+    <div class="ink-blot ink-blot-2" aria-hidden="true"></div>
+    <div class="ink-blot ink-blot-3" aria-hidden="true"></div>
+
+    <header class="masthead">
+      <a class="sigil-link" href="#top" aria-label="Rakehell home">
+        <svg viewBox="0 0 100 100" role="img" aria-label="Rakehell seal">
+          <circle cx="50" cy="50" r="44" />
+          <circle cx="50" cy="50" r="36" />
+          <path
+            d="M30 68V30h18c13 0 21 7 21 18 0 8-4 13-11 16l14 20H58L46 66h-4v18H30Zm12-29v17h6c6 0 9-3 9-9 0-5-3-8-9-8h-6Z"
+          />
+        </svg>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="#proclamation"><span>I.</span> How it works</a>
+        <a href="#game"><span>II.</span> Live Stats</a>
+        <a href="#roadmap"><span>III.</span> Roadmap</a>
+      </nav>
+      <a class="small-cta" href="#summon">Join</a>
+    </header>
+
+    <main id="top">
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-rule" aria-hidden="true">
+          <span></span><i>Anno Domini MMXXVI</i><span></span>
+        </div>
+
+        <p class="eyebrow">
+          6 seats ★ 3 Fates ★ Win $100 ★ Full Refund ★ Or Lose
+        </p>
+        <h1 id="hero-title">Rakehell</h1>
+        <div class="ticker"><span>ticker</span> $VICE</div>
+
+        <div class="hero-art" aria-hidden="true">
+          <svg class="serpent" viewBox="0 0 720 245">
+            <path
+              class="hairline"
+              d="M21 124C116 36 196 39 266 97c69 57 112 85 191 32 74-50 140-52 240-7"
+            />
+            <path
+              class="bodyline"
+              d="M38 129c69-62 139-71 209-25 84 56 121 95 219 28 61-42 122-47 211-11"
+            />
+            <path d="m664 104 37 17-35 20 10-19-12-18Z" />
+            <circle cx="684" cy="119" r="2.5" class="paper-eye" />
+            <path
+              class="flourish"
+              d="M94 131c-17 18-11 42 13 40 28-3 22-38-1-37-30 2-43 50-14 66M587 128c16 19 8 43-16 39-27-5-19-40 4-37 30 4 39 52 9 66"
+            />
+          </svg>
+          <div class="coin">
+            <div class="coin-inner">
+              <span class="coin-top">Fortuna</span>
+              <strong>V</strong>
+              <span class="coin-bottom">Audaces Iuvat</span>
+            </div>
+          </div>
+        </div>
+
+        <p class="hero-copy">
+          Six wallets. $30 entry. Two winners get paid — $50 of each pot stays
+          burned.
+        </p>
+        <a class="wax-button" href="#proclamation">
+          <span class="wax-seal">V</span>
+          <span>How it works</span>
+        </a>
+
+        <div class="scroll-cue" aria-hidden="true">
+          Scroll <span>↓</span>
+        </div>
+      </section>
+
+      <section class="proclamation sheet-section" id="proclamation">
+        <div class="section-number">Caput I</div>
+        <div class="ornament">❦</div>
+        <h2>How the Game<br />Works</h2>
+        <div class="columns">
+          <p class="drop-cap">
+            Rakehell is a 6-player on-chain game built into CA. Entry is
+            <strong>$30 worth of tokens</strong> per seat. You pick an empty
+            seat by sending tokens to that seat address (burn addresses
+            <code>0x000…0001</code>–<code>0x000…0006</code>). Your entry is
+            burned as the stake.
+          </p>
+          <p>
+            When all six seats are filled ($180 pot), the game waits. The next
+            buy/sell swap worth at least 2× the entry ($60) settles it: 1st gets
+            <strong>$100</strong> worth of tokens, 2nd gets
+            <strong>$30</strong>, and <strong>$50</strong> stays burned. No
+            admin payout.
+          </p>
+        </div>
+
+        <div class="covenant">
+          <p class="covenant-kicker">Four steps</p>
+
+          <div class="game-grid">
+            <article>
+              <div class="roman">I</div>
+              <h3>Pick a seat</h3>
+              <p>
+                Send any tiny amount of the token to seat
+                <code>0x…0001</code>–<code>0x…0006</code>. One empty seat per
+                wallet per game.
+              </p>
+            </article>
+            <article>
+              <div class="roman">II</div>
+              <h3>Entry burns</h3>
+              <p>
+                Entry fee is <strong>$30</strong> worth of tokens. The contract
+                burns that full amount from your balance. The first player locks
+                the token price for the whole table.
+              </p>
+            </article>
+            <article>
+              <div class="roman">III</div>
+              <h3>Wait for a trade</h3>
+              <p>
+                After six seats fill, winners are not drawn yet. A Uniswap buy
+                or sell ≥ $60 (2× entry) settles the game.
+              </p>
+            </article>
+            <article>
+              <div class="roman">IV</div>
+              <h3>Winners paid</h3>
+              <p>
+                1st is minted <strong>$100</strong> worth of tokens, 2nd
+                <strong>$30</strong>. The last <strong>$50</strong> stays burned
+                forever.
+              </p>
+            </article>
+          </div>
+
+          <div class="payout-ledger">
+            <div>
+              <span class="ledger-unit">$</span
+              ><span class="ledger-value">100</span>
+              <p>1st place</p>
+            </div>
+            <i></i>
+            <div>
+              <span class="ledger-unit">$</span
+              ><span class="ledger-value">30</span>
+              <p>2nd place</p>
+            </div>
+            <i></i>
+            <div>
+              <span class="ledger-unit">$</span
+              ><span class="ledger-value">50</span>
+              <p>Stays burned</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="game dark-section" id="game">
+        <div class="dark-frame"></div>
+        <div class="section-number">Caput II</div>
+
+        <div class="stats-heading">
+          <span class="led-pilot" aria-hidden="true" title="Live"></span>
+          <h2>Live Stats</h2>
+        </div>
+        <p class="led-sub">Pulled from the contract · auto-refreshes</p>
+
+        <div class="live-ledger" id="live-ledger" aria-live="polite">
+          <div class="live-toolbar">
+            <div class="live-ribbon" id="live-status">Loading live stats…</div>
+            <button
+              type="button"
+              class="live-refresh"
+              id="live-refresh"
+              title="Refresh stats"
+            >
+              Refresh
+            </button>
+          </div>
+
+          <div class="live-heroes">
+            <div class="live-hero">
+              <span class="live-hero-key">Game</span>
+              <span class="live-hero-val" id="stat-game">—</span>
+            </div>
+            <div class="live-hero-divider" aria-hidden="true"></div>
+            <div class="live-hero">
+              <span class="live-hero-key">Seats</span>
+              <span class="live-hero-val" id="stat-seats">—</span>
+              <div class="seat-dots" id="seat-dots" aria-hidden="true">
+                <i></i><i></i><i></i><i></i><i></i><i></i>
+              </div>
+            </div>
+            <div class="live-hero-divider" aria-hidden="true"></div>
+            <div class="live-hero">
+              <span class="live-hero-key">Table</span>
+              <span class="live-hero-val live-hero-status" id="stat-status"
+                >—</span
+              >
+            </div>
+          </div>
+
+          <div class="seat-board">
+            <div class="seat-ledger">
+              <p class="seat-ledger-title">Current seats</p>
+              <table class="seat-table">
+                <thead>
+                  <tr>
+                    <th>Slot</th>
+                    <th>Seat</th>
+                    <th>Player</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="seat-board">
+                  <tr
+                    class="seat-row"
+                    data-slot="1"
+                    data-addr="0x0000000000000000000000000000000000000001"
+                    tabindex="0"
+                    title="Copy seat address"
+                  >
+                    <td class="seat-num">1</td>
+                    <td class="seat-addr-cell">
+                      <span class="seat-addr">0x000…0001</span
+                      ><span class="seat-copy" aria-hidden="true">⧉</span>
+                    </td>
+                    <td class="seat-player-cell">
+                      <a class="seat-player" href="#" tabindex="-1">—</a>
+                    </td>
+                    <td class="seat-state">Open</td>
+                  </tr>
+                  <tr
+                    class="seat-row"
+                    data-slot="2"
+                    data-addr="0x0000000000000000000000000000000000000002"
+                    tabindex="0"
+                    title="Copy seat address"
+                  >
+                    <td class="seat-num">2</td>
+                    <td class="seat-addr-cell">
+                      <span class="seat-addr">0x000…0002</span
+                      ><span class="seat-copy" aria-hidden="true">⧉</span>
+                    </td>
+                    <td class="seat-player-cell">
+                      <a class="seat-player" href="#" tabindex="-1">—</a>
+                    </td>
+                    <td class="seat-state">Open</td>
+                  </tr>
+                  <tr
+                    class="seat-row"
+                    data-slot="3"
+                    data-addr="0x0000000000000000000000000000000000000003"
+                    tabindex="0"
+                    title="Copy seat address"
+                  >
+                    <td class="seat-num">3</td>
+                    <td class="seat-addr-cell">
+                      <span class="seat-addr">0x000…0003</span
+                      ><span class="seat-copy" aria-hidden="true">⧉</span>
+                    </td>
+                    <td class="seat-player-cell">
+                      <a class="seat-player" href="#" tabindex="-1">—</a>
+                    </td>
+                    <td class="seat-state">Open</td>
+                  </tr>
+                  <tr
+                    class="seat-row"
+                    data-slot="4"
+                    data-addr="0x0000000000000000000000000000000000000004"
+                    tabindex="0"
+                    title="Copy seat address"
+                  >
+                    <td class="seat-num">4</td>
+                    <td class="seat-addr-cell">
+                      <span class="seat-addr">0x000…0004</span
+                      ><span class="seat-copy" aria-hidden="true">⧉</span>
+                    </td>
+                    <td class="seat-player-cell">
+                      <a class="seat-player" href="#" tabindex="-1">—</a>
+                    </td>
+                    <td class="seat-state">Open</td>
+                  </tr>
+                  <tr
+                    class="seat-row"
+                    data-slot="5"
+                    data-addr="0x0000000000000000000000000000000000000005"
+                    tabindex="0"
+                    title="Copy seat address"
+                  >
+                    <td class="seat-num">5</td>
+                    <td class="seat-addr-cell">
+                      <span class="seat-addr">0x000…0005</span
+                      ><span class="seat-copy" aria-hidden="true">⧉</span>
+                    </td>
+                    <td class="seat-player-cell">
+                      <a class="seat-player" href="#" tabindex="-1">—</a>
+                    </td>
+                    <td class="seat-state">Open</td>
+                  </tr>
+                  <tr
+                    class="seat-row"
+                    data-slot="6"
+                    data-addr="0x0000000000000000000000000000000000000006"
+                    tabindex="0"
+                    title="Copy seat address"
+                  >
+                    <td class="seat-num">6</td>
+                    <td class="seat-addr-cell">
+                      <span class="seat-addr">0x000…0006</span
+                      ><span class="seat-copy" aria-hidden="true">⧉</span>
+                    </td>
+                    <td class="seat-player-cell">
+                      <a class="seat-player" href="#" tabindex="-1">—</a>
+                    </td>
+                    <td class="seat-state">Open</td>
+                  </tr>
+                </tbody>
+              </table>
+              <p class="seat-board-hint">
+                Click a row to copy the seat · click player to open on Etherscan
+              </p>
+            </div>
+          </div>
+
+          <div class="live-metrics">
+            <div class="live-metric">
+              <span class="live-metric-key">Entry</span>
+              <button
+                type="button"
+                class="live-metric-val live-metric-copy"
+                id="stat-entry"
+                title="Copy entry amount"
+              >
+                <span class="entry-main" id="stat-entry-main">—</span>
+                <span class="entry-usd" id="stat-entry-usd"></span>
+              </button>
+            </div>
+            <div class="live-metric">
+              <span class="live-metric-key">Last Pot</span>
+              <span class="live-metric-val" id="stat-pot">—</span>
+            </div>
+            <div class="live-metric">
+              <span class="live-metric-key">Burned</span>
+              <span class="live-metric-val accent" id="stat-burned">—</span>
+            </div>
+            <div class="live-metric">
+              <span class="live-metric-key">Supply</span>
+              <span class="live-metric-val" id="stat-supply">—</span>
+            </div>
+          </div>
+
+          <div class="live-victors">
+            <div class="victor victor-crown">
+              <span class="victor-badge">I</span>
+              <div>
+                <span class="victor-key">Last 1st</span>
+                <a
+                  class="victor-val"
+                  id="stat-winner"
+                  href="#"
+                  target="_blank"
+                  rel="noreferrer"
+                  >—</a
+                >
+              </div>
+            </div>
+            <div class="victor victor-second">
+              <span class="victor-badge">II</span>
+              <div>
+                <span class="victor-key">Last 2nd</span>
+                <a
+                  class="victor-val"
+                  id="stat-runner"
+                  href="#"
+                  target="_blank"
+                  rel="noreferrer"
+                  >—</a
+                >
+              </div>
+            </div>
+          </div>
+
+          <p class="live-note" id="live-note">
+            Live reads from the contract.
+          </p>
+        </div>
+
+        <p class="fine-print">
+          Experimental. No guaranteed profit. Check the verified contract before
+          sending funds.
+        </p>
+      </section>
+
+      <section class="chronicle sheet-section" id="chronicle">
+        <div class="section-number">Caput III</div>
+        <div class="ornament">✦</div>
+        <h2>At a Glance</h2>
+        <p class="section-intro">
+          Fixed rules every game: $30 entry, six seats, $100 / $30 / $50 split.
+        </p>
+
+        <div class="chronicle-grid">
+          <div class="tally">
+            <span>$30</span>
+            <p>Entry fee per seat</p>
+          </div>
+          <div class="tally">
+            <span>VI</span>
+            <p>Seats per game</p>
+          </div>
+          <div class="tally">
+            <span>$50</span>
+            <p>Of each pot stays burned</p>
+          </div>
+        </div>
+
+        <div class="motto-box">
+          <span class="motto-label">Quick tip</span>
+          <p id="motto">
+            Entry fee is $30 worth of tokens — send any tiny amount to a seat;
+            the contract burns the full $30 from your balance.
+          </p>
+          <button id="new-motto" type="button">Next tip</button>
+        </div>
+      </section>
+
+      <section class="roadmap sheet-section" id="roadmap">
+        <div class="section-number">Caput IV</div>
+        <div class="ornament">❧</div>
+        <h2>Roadmap</h2>
+        <p class="section-intro">
+          What’s live now, what’s next, and what’s still coming.
+        </p>
+
+        <div class="roadmap-phases">
+          <article class="phase phase-live" data-reveal="up">
+            <div class="phase-mark">
+              <span class="phase-numeral">I</span>
+              <span class="phase-status">Live</span>
+            </div>
+            <h3>Live now</h3>
+            <ul>
+              <li>On-chain 6-player game built into CA</li>
+              <li>Token Launch on Robinhood Chain</li>
+              <li>Telegram bot for on-chain updates</li>
+            </ul>
+          </article>
+
+          <article class="phase" data-reveal="up">
+            <div class="phase-mark">
+              <span class="phase-numeral">II</span>
+              <span class="phase-status">Next</span>
+            </div>
+            <h3>Next up</h3>
+            <ul>
+              <li>Custom Contract with Chainlink VRF as RNG</li>
+              <li>Multiple games settlement with different Tiers</li>
+              <li>Multi-token compatible Contract for different tokens</li>
+              <li>Community driven on-chain game</li>
+            </ul>
+          </article>
+
+          <article class="phase phase-soon" data-reveal="up">
+            <div class="phase-mark">
+              <span class="phase-numeral">III</span>
+              <span class="phase-status">Soon</span>
+            </div>
+            <h3>Later</h3>
+            <ul>
+              <li>More features TBA</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section class="summon" id="summon">
+        <div class="summon-inner">
+          <svg viewBox="0 0 150 100" aria-hidden="true">
+            <path
+              d="M14 78c29-4 50-21 58-54 8 30 28 49 64 54-32 1-54-8-65-27-11 18-29 27-57 27Z"
+            />
+            <path d="M72 24v64M52 46c13 6 26 6 40 0" />
+          </svg>
+          <p class="eyebrow">Ready to play</p>
+          <h2>Join the<br />community</h2>
+          <p>
+            Chat, updates, and game alerts — Telegram and X.
+          </p>
+          <div class="summon-actions">
+            <a
+              class="primary-action"
+              href="https://t.me/DebaucheryExcess"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Join Telegram
+            </a>
+            <a
+              class="text-action"
+              href="https://x.com/EthExcess"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Follow on X ↗
+            </a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="footer-mark">R</div>
+      <p>Rakehell · $VICE · On-chain 6-player game</p>
+      <p class="footer-small">No promise of profit. DYOR.</p>
+      <span>MMXXVI</span>
+    </footer>
+
+    <script src="./script.js?v=3"></script>
+    <script src="./stats.js?v=15"></script>
+  </body>
+</html>

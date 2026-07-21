@@ -1,0 +1,12 @@
+# secrets
+test/wallets.json
+test/deployer.key
+*.key
+.env
+.env.*
+
+# tooling
+.wrangler/
+node_modules/
+.DS_Store
+*.log

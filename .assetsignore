@@ -1,0 +1,7 @@
+test/
+token.sol
+.gitignore
+.vercelignore
+.assetsignore
+.vercel/
+.DS_Store
