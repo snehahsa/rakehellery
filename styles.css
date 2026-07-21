@@ -1863,7 +1863,8 @@ footer > span {
     display: flex;
     flex-wrap: nowrap;
     justify-content: center;
-    gap: 10px;
+    align-items: center;
+    gap: 0;
     min-width: 0;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
@@ -1875,10 +1876,25 @@ footer > span {
   }
 
   .masthead nav a {
+    position: relative;
     flex: 0 0 auto;
+    padding: 0 8px;
     font-size: 0.58rem;
     letter-spacing: 0.06em;
     white-space: nowrap;
+  }
+
+  .masthead nav a + a::before {
+    position: absolute;
+    top: 50%;
+    left: -2px;
+    color: var(--blood);
+    content: "✷";
+    font-size: 0.55rem;
+    line-height: 1;
+    opacity: 0.85;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
   }
 
   .masthead nav a span {
@@ -2035,11 +2051,16 @@ footer > span {
   }
 
   .masthead nav {
-    gap: 8px;
+    gap: 0;
   }
 
   .masthead nav a {
+    padding: 0 7px;
     font-size: 0.52rem;
+  }
+
+  .masthead nav a + a::before {
+    font-size: 0.48rem;
   }
 
   .small-cta {
