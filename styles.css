@@ -1112,15 +1112,16 @@ blockquote cite {
 
 .live-ribbon {
   position: relative;
-  display: inline-block;
+  display: block;
   margin: 0;
-  padding: 8px 22px;
-  border: 1px solid rgba(167, 131, 71, 0.55);
+  padding: 0;
+  border: 0;
   color: #f0e2bc;
-  background: rgba(111, 23, 23, 0.35);
+  background: transparent;
   font-family: "IM Fell English", Georgia, serif;
   font-size: 0.95rem;
   font-style: italic;
+  text-align: center;
 }
 
 .live-toolbar {
