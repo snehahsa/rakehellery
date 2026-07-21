@@ -837,7 +837,8 @@
       refreshing = true;
       if (refreshBtn) {
         refreshBtn.disabled = true;
-        refreshBtn.textContent = "Refreshing…";
+        const label = refreshBtn.querySelector(".seat-refresh-text");
+        if (label) label.textContent = "Refreshing";
       }
       try {
         await loadStats(ca);
@@ -845,7 +846,8 @@
         refreshing = false;
         if (refreshBtn) {
           refreshBtn.disabled = false;
-          refreshBtn.textContent = "Refresh";
+          const label = refreshBtn.querySelector(".seat-refresh-text");
+          if (label) label.textContent = "Refresh";
         }
       }
     };
