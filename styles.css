@@ -729,6 +729,62 @@ a {
   text-align: center;
 }
 
+.how-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 28px;
+  max-width: 640px;
+  margin: 60px auto 0;
+  text-align: left;
+}
+
+.how-stack > p {
+  margin: 0;
+}
+
+.seat-map {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin: 8px 0 4px;
+  padding: 0;
+  list-style: none;
+  text-align: center;
+}
+
+.seat-map li {
+  display: grid;
+  grid-template-columns: 5.5rem 1.4rem minmax(0, auto);
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: max-content;
+  max-width: 100%;
+  color: var(--ink);
+  font-family: "Cinzel", Georgia, serif;
+  font-size: clamp(0.78rem, 2.4vw, 0.95rem);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+}
+
+.seat-map span {
+  text-align: right;
+}
+
+.seat-map i {
+  font-style: normal;
+  color: var(--blood);
+}
+
+.seat-map code {
+  text-align: left;
+  font-family: "Libre Baskerville", Georgia, serif;
+  font-size: 0.92em;
+  letter-spacing: 0.02em;
+}
+
 .columns {
   margin-top: 60px;
   column-count: 2;

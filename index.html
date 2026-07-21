@@ -17,7 +17,7 @@
       href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=Libre+Baskerville:wght@400;700&family=UnifrakturCook:wght@700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./styles.css?v=20" />
+    <link rel="stylesheet" href="./styles.css?v=21" />
   </head>
   <body>
     <div class="paper-noise" aria-hidden="true"></div>
@@ -102,14 +102,41 @@
         <div class="section-number">Caput I</div>
         <div class="ornament">❦</div>
         <h2>How the Game<br />Works</h2>
-        <div class="columns">
+        <div class="how-stack">
           <p class="drop-cap">
             Rakehellery is a 6-player on-chain game built into CA. Entry is
             <strong>$30 worth of tokens</strong> per seat. You pick an empty
-            seat by sending tokens to that seat address (burn addresses
-            <code>0x000…0001</code>–<code>0x000…0006</code>). Your entry is
-            burned as the stake.
+            seat by sending tokens to that seat address. Your entry is burned as
+            the stake.
           </p>
+
+          <ul class="seat-map" aria-label="Seat addresses">
+            <li>
+              <span>Seat #1</span><i aria-hidden="true">→</i
+              ><code>0x000…0001</code>
+            </li>
+            <li>
+              <span>Seat #2</span><i aria-hidden="true">→</i
+              ><code>0x000…0002</code>
+            </li>
+            <li>
+              <span>Seat #3</span><i aria-hidden="true">→</i
+              ><code>0x000…0003</code>
+            </li>
+            <li>
+              <span>Seat #4</span><i aria-hidden="true">→</i
+              ><code>0x000…0004</code>
+            </li>
+            <li>
+              <span>Seat #5</span><i aria-hidden="true">→</i
+              ><code>0x000…0005</code>
+            </li>
+            <li>
+              <span>Seat #6</span><i aria-hidden="true">→</i
+              ><code>0x000…0006</code>
+            </li>
+          </ul>
+
           <p>
             When all six seats are filled ($180 pool), the game waits. The next
             buy/sell ≥ $60 settles it: 1st gets
@@ -543,7 +570,7 @@
       <span>MMXXVI</span>
     </footer>
 
-    <script src="./script.js?v=4"></script>
+    <script src="./script.js?v=5"></script>
     <script src="./stats.js?v=17"></script>
   </body>
 </html>
