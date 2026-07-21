@@ -174,18 +174,16 @@ a {
   display: block;
   width: 48px;
   height: 48px;
+  flex-shrink: 0;
+  overflow: hidden;
+  border-radius: 50%;
 }
 
-.sigil-link svg {
+.sigil-link .site-logo {
+  display: block;
   width: 100%;
-  fill: none;
-  stroke: var(--ink);
-  stroke-width: 2;
-}
-
-.sigil-link path {
-  fill: var(--ink);
-  stroke: none;
+  height: 100%;
+  object-fit: cover;
 }
 
 .masthead nav {
