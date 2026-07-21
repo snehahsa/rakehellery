@@ -597,7 +597,7 @@
       let settledGame = 0;
       let winSlot = ZERO;
       let runSlot = ZERO;
-      let potCost = 0n;
+      let poolCost = 0n;
 
       for (const g of gamesToCheck) {
         const slot = by[`result${g}`]?.success
@@ -609,7 +609,7 @@
           runSlot = by[`runner${g}`]?.success
             ? decodeAddress(by[`runner${g}`].returnData)
             : ZERO;
-          potCost = by[`cost${g}`]?.success
+          poolCost = by[`cost${g}`]?.success
             ? decodeUint(by[`cost${g}`].returnData)
             : 0n;
           break;
@@ -665,7 +665,7 @@
             const cost = by[`cost${g}`].success
               ? decodeUint(by[`cost${g}`].returnData)
               : 0n;
-            // 5/18 of pot stays burned (~27.8%)
+            // 5/18 of pool stays burned (~27.8%)
             burned += (cost * BigInt(PLAYERS) * 5n) / 18n;
             settledCount++;
             continue;
@@ -693,7 +693,7 @@
             const cost = bBy[`bC${g}`]?.success
               ? decodeUint(bBy[`bC${g}`].returnData)
               : 0n;
-            // 5/18 of pot stays burned (~27.8%)
+            // 5/18 of pool stays burned (~27.8%)
             burned += (cost * BigInt(PLAYERS) * 5n) / 18n;
             settledCount++;
           }
@@ -780,9 +780,9 @@
       setAddrLink("stat-winner", winnerWallet);
       setAddrLink("stat-runner", runnerWallet);
       setText(
-        "stat-pot",
-        potCost > 0n
-          ? `${formatTokens(potCost * BigInt(PLAYERS), decimals)} ${symbol}`
+        "stat-pool",
+        poolCost > 0n
+          ? `${formatTokens(poolCost * BigInt(PLAYERS), decimals)} ${symbol}`
           : "—",
       );
       setText(

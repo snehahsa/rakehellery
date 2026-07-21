@@ -3,7 +3,7 @@ const mottos = [
   "You must send to 0x…0001–0006. Sending to 0x…0000 does not claim a seat.",
   "Winners are not drawn on the 6th entry. A Uniswap buy/sell ≥ $60 (2× entry) settles the game.",
   "2× means that one trade’s USD size — not market cap doubling.",
-  "6 × $30 pot: 1st gets $100, 2nd gets $30, $50 stays burned.",
+  "6 × $30 pool: 1st gets $100, 2nd gets $30, $50 stays burned.",
   "One wallet can take only one seat per game.",
   "The first player locks the token amount for the $30 entry for everyone at that table.",
 ];
