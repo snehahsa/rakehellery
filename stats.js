@@ -483,9 +483,8 @@
         base[3].success && decodeUint(base[3].returnData) > 0n
           ? decodeUint(base[3].returnData)
           : 18n;
-      const symbol = base[4].success
-        ? decodeString(base[4].returnData) || "VICE"
-        : "VICE";
+      // On-chain ticker may still read EXCESS; always display VICE (CA unchanged).
+      const symbol = "VICE";
       const costUsdX96 = decodeUint(base[5].returnData);
       const entryTokens =
         base[6].success &&
