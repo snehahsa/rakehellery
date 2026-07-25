@@ -228,12 +228,12 @@
     return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
 
-  // Round UP to 1 significant digit (593039 → 600000, 5930039 → 6000000).
+  // Round UP to 2 significant digits (593039 → 600000, 5930039 → 6000000).
   function roundUpDisplayTokens(whole) {
     if (whole <= 0n) return 0n;
     const s = whole.toString();
-    if (s.length === 1) return whole;
-    const mag = 10n ** BigInt(s.length - 1);
+    if (s.length <= 2) return whole;
+    const mag = 10n ** BigInt(s.length - 2);
     return ((whole + mag - 1n) / mag) * mag;
   }
 
