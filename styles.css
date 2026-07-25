@@ -1237,8 +1237,9 @@ blockquote cite {
   gap: 8px;
   max-width: 100%;
   margin: 0 auto 16px;
-  padding: 7px 12px 6px;
+  padding: 7px 14px 6px;
   border: 1px solid rgba(234, 219, 183, 0.35);
+  border-radius: 999px;
   color: #fff4d8;
   background: rgba(17, 12, 9, 0.72);
   cursor: pointer;
@@ -1609,22 +1610,17 @@ button.live-metric-copy:hover .entry-main {
   position: relative;
   display: flex;
   width: 100%;
-  max-width: 364px;
+  max-width: min(720px, 100%);
   flex-direction: column;
   align-items: center;
-  gap: 3px;
-  margin: 0 auto 15px;
-  padding: 13px 14px 11px;
-  border: 1px solid rgba(234, 219, 183, 0.45);
+  gap: 6px;
+  margin: 0 auto 18px;
+  padding: 4px 12px 10px;
+  border: none;
   color: #fff4d8;
-  background:
-    radial-gradient(
-      circle at 50% 0%,
-      rgba(167, 131, 71, 0.18),
-      transparent 55%
-    ),
-    rgba(17, 12, 9, 0.92);
+  background: transparent;
   text-align: center;
+  box-sizing: border-box;
 }
 
 .entry-banner-key {
@@ -1671,25 +1667,30 @@ button.live-metric-copy:hover .entry-main {
 
 .entry-seat-hint {
   display: block;
-  margin-top: 1px;
+  width: 100%;
+  max-width: 42rem;
+  margin-top: 2px;
   color: #d4b878;
   font-family: "IM Fell English", Georgia, serif;
-  font-size: clamp(0.66rem, 1.68vw, 0.8rem);
+  font-size: clamp(0.79rem, 2.02vw, 0.96rem);
   font-weight: 400;
   font-style: italic;
   letter-spacing: 0.03em;
   text-transform: none;
+  line-height: 1.4;
 }
 
 .entry-round-note {
-  margin-top: 4px;
-  max-width: 28ch;
+  display: block;
+  width: 100%;
+  max-width: 42rem;
+  margin-top: 2px;
   color: #fff;
   font-family: "IM Fell English", Georgia, serif;
-  font-size: 0.62rem;
+  font-size: 0.74rem;
   font-style: italic;
   letter-spacing: 0.03em;
-  line-height: 1.35;
+  line-height: 1.45;
 }
 
 .entry-main {
@@ -2320,6 +2321,17 @@ footer > span {
 
   .live-ledger {
     padding: 28px 16px 22px;
+  }
+
+  .entry-banner {
+    max-width: 100%;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .entry-seat-hint,
+  .entry-round-note {
+    max-width: 100%;
   }
 
   .seat-ledger {

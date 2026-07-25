@@ -254,13 +254,13 @@
       main.textContent = `${formatCommaInt(rounded)} ${symbol}`;
       if (noteEl) {
         noteEl.textContent =
-          "Actual fee is lower — lowered automatically to the exact amount.";
+          "Actual fee is lower — the amount is auto lowered to the exact amount when transfer occurs.";
       }
     } else {
       main.textContent = "$30";
       if (noteEl) {
         noteEl.textContent =
-          "Actual fee is lower — lowered automatically to the exact amount.";
+          "Actual fee is lower — the amount is auto lowered to the exact amount when transfer occurs.";
       }
     }
   }
