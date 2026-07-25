@@ -205,16 +205,6 @@
     return `${whole}.${frac}`;
   }
 
-  function formatTokenExact(amount, decimals = 18n) {
-    let dec = BigInt(decimals);
-    if (dec <= 0n || dec > 36n) dec = 18n;
-    const base = 10n ** dec;
-    const whole = amount / base;
-    let frac = (amount % base).toString().padStart(Number(dec), "0");
-    frac = frac.replace(/0+$/, "");
-    return frac ? `${whole}.${frac}` : `${whole}`;
-  }
-
   function formatUsdFromX96(x96) {
     const usd = Number(x96) / Number(Q96);
     if (!Number.isFinite(usd)) return "—";
@@ -234,60 +224,49 @@
     return (costUsdX96 * 10n ** dec) / priceX96;
   }
 
+  function formatCommaInt(n) {
+    return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
+
+  // Round UP to 1 significant digit (593039 → 600000, 5930039 → 6000000).
+  function roundUpDisplayTokens(whole) {
+    if (whole <= 0n) return 0n;
+    const s = whole.toString();
+    if (s.length === 1) return whole;
+    const mag = 10n ** BigInt(s.length - 1);
+    return ((whole + mag - 1n) / mag) * mag;
+  }
+
   function setEntryDisplay(entryTokens, decimals, symbol, costUsdX96) {
-    const btn = document.getElementById("stat-entry");
+    const box = document.getElementById("stat-entry");
     const main = document.getElementById("stat-entry-main");
     const usdEl = document.getElementById("stat-entry-usd");
-    if (!btn || !main || !usdEl) return;
+    const noteEl = document.getElementById("stat-entry-note");
+    if (!box || !main || !usdEl) return;
 
     const usdLabel =
       costUsdX96 && costUsdX96 > 0n
         ? `worth ${formatUsdFromX96(costUsdX96)} USD`
         : "worth $30 USD";
     usdEl.textContent = usdLabel;
-    btn.dataset.usdShown = usdLabel;
 
     if (entryTokens != null && entryTokens > 0n) {
-      const shown = `${formatTokens(entryTokens, decimals)} ${symbol}`;
-      const exact = formatTokenExact(entryTokens, decimals);
-      main.textContent = shown;
-      btn.dataset.copy = exact;
-      btn.title = `Copy ${exact}`;
+      let dec = BigInt(decimals);
+      if (dec <= 0n || dec > 36n) dec = 18n;
+      const whole = entryTokens / 10n ** dec;
+      const rounded = roundUpDisplayTokens(whole);
+      main.textContent = `~${formatCommaInt(rounded)} ${symbol}`;
+      if (noteEl) {
+        noteEl.textContent =
+          "Rounded up. Exact fee is charged automatically.";
+      }
     } else {
       main.textContent = "$30";
-      btn.dataset.copy = "30";
-      btn.title = "Copy entry fee";
+      if (noteEl) {
+        noteEl.textContent =
+          "Rounded up. Exact fee is charged automatically.";
+      }
     }
-  }
-
-  function initEntryCopy() {
-    const btn = document.getElementById("stat-entry");
-    if (!btn || btn.dataset.bound) return;
-    btn.dataset.bound = "1";
-    if (!btn.dataset.copy) btn.dataset.copy = "30";
-    if (!btn.dataset.usdShown) btn.dataset.usdShown = "worth $30 USD";
-    btn.addEventListener("click", async () => {
-      const text = btn.dataset.copy;
-      if (!text || text === "—") return;
-      const ok = await copyText(text);
-      if (!ok) return;
-      btn.classList.add("copied");
-      const usdEl = document.getElementById("stat-entry-usd");
-      const icon = btn.querySelector(".entry-copy-icon");
-      const hint = btn.querySelector(".entry-copy-hint");
-      const prevUsd = btn.dataset.usdShown || "worth $30 USD";
-      const prevIcon = icon?.textContent || "⧉";
-      if (usdEl) usdEl.textContent = "copied";
-      if (icon) icon.textContent = "✓";
-      if (hint) hint.textContent = "Copied";
-      clearTimeout(btn._copyTimer);
-      btn._copyTimer = setTimeout(() => {
-        btn.classList.remove("copied");
-        if (usdEl) usdEl.textContent = prevUsd;
-        if (icon) icon.textContent = prevIcon;
-        if (hint) hint.textContent = "Click to copy";
-      }, 1100);
-    });
   }
 
   function sleep(ms) {
@@ -965,7 +944,6 @@
     const ledger = document.getElementById("live-ledger");
     if (!ledger) return;
     initSeatBoard();
-    initEntryCopy();
     initAddrCopy();
     initSeatMapCopy();
 

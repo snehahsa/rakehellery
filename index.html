@@ -17,7 +17,7 @@
       href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=Libre+Baskerville:wght@400;700&family=UnifrakturCook:wght@700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./styles.css?v=44" />
+    <link rel="stylesheet" href="./styles.css?v=45" />
   </head>
   <body>
     <div class="paper-noise" aria-hidden="true"></div>
@@ -88,20 +88,14 @@
             <span class="ca-chip-copy" aria-hidden="true">⧉</span>
           </button>
 
-          <button
-            type="button"
-            class="entry-banner"
-            id="stat-entry"
-            title="Copy current entry fee"
-          >
+          <div class="entry-banner" id="stat-entry">
             <span class="entry-banner-key">Current entry fee</span>
-            <span class="entry-main-row">
-              <span class="entry-main" id="stat-entry-main">—</span>
-              <span class="entry-copy-icon" aria-hidden="true">⧉</span>
-            </span>
+            <span class="entry-main" id="stat-entry-main">—</span>
             <span class="entry-usd" id="stat-entry-usd">worth $30 USD</span>
-            <span class="entry-copy-hint">Click to copy</span>
-          </button>
+            <span class="entry-round-note" id="stat-entry-note"
+              >Rounded up. Exact fee is charged automatically.</span
+            >
+          </div>
 
           <div class="seat-board">
             <div class="seat-ledger">
@@ -526,6 +520,6 @@
     </footer>
 
     <script src="./script.js?v=7"></script>
-    <script src="./stats.js?v=32"></script>
+    <script src="./stats.js?v=33"></script>
   </body>
 </html>

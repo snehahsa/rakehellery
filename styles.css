@@ -1606,7 +1606,6 @@ button.live-metric-copy:hover .entry-main {
 }
 
 .entry-banner {
-  appearance: none;
   position: relative;
   display: flex;
   width: 100%;
@@ -1625,15 +1624,7 @@ button.live-metric-copy:hover .entry-main {
       transparent 55%
     ),
     rgba(17, 12, 9, 0.92);
-  cursor: pointer;
   text-align: center;
-  transition:
-    border-color 0.2s ease,
-    background 0.2s ease;
-}
-
-.entry-banner:hover {
-  border-color: rgba(234, 219, 183, 0.75);
 }
 
 .entry-banner-key {
@@ -1642,14 +1633,6 @@ button.live-metric-copy:hover .entry-main {
   font-size: 0.55rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-}
-
-.entry-main-row {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  max-width: 100%;
 }
 
 .entry-banner .entry-main {
@@ -1664,18 +1647,6 @@ button.live-metric-copy:hover .entry-main {
   word-break: break-word;
 }
 
-.entry-copy-icon {
-  flex: 0 0 auto;
-  color: rgba(234, 219, 183, 0.8);
-  font-size: 0.95rem;
-  line-height: 1;
-  transition: color 0.2s ease;
-}
-
-.entry-banner:hover .entry-copy-icon {
-  color: var(--gold);
-}
-
 .entry-banner .entry-usd {
   display: block;
   margin-top: 1px;
@@ -1688,23 +1659,15 @@ button.live-metric-copy:hover .entry-main {
   text-transform: uppercase;
 }
 
-.entry-copy-hint {
+.entry-round-note {
   margin-top: 4px;
+  max-width: 28ch;
   color: #fff;
   font-family: "IM Fell English", Georgia, serif;
   font-size: 0.62rem;
   font-style: italic;
-  letter-spacing: 0.04em;
-}
-
-.entry-banner.copied {
-  border-color: var(--gold);
-}
-
-.entry-banner.copied .entry-usd,
-.entry-banner.copied .entry-copy-icon,
-.entry-banner.copied .entry-copy-hint {
-  color: var(--gold);
+  letter-spacing: 0.03em;
+  line-height: 1.35;
 }
 
 .entry-main {
