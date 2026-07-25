@@ -135,15 +135,18 @@
       if (!ok) return;
       btn.classList.add("copied");
       const icon = btn.querySelector(".ca-chip-copy");
+      const hint = btn.querySelector(".ca-chip-hint");
       const prev = addrEl.textContent;
       const prevIcon = icon?.textContent || "⧉";
       addrEl.textContent = "Copied";
       if (icon) icon.textContent = "✓";
+      if (hint) hint.textContent = "Copied";
       clearTimeout(btn._copyTimer);
       btn._copyTimer = setTimeout(() => {
         btn.classList.remove("copied");
         addrEl.textContent = prev;
         if (icon) icon.textContent = prevIcon;
+        if (hint) hint.textContent = "Click to copy";
       }, 1100);
     });
   }
@@ -249,13 +252,13 @@
 
     if (entryTokens != null && entryTokens > 0n) {
       const shown = `${formatTokens(entryTokens, decimals)} ${symbol}`;
-      const exact = `${formatTokenExact(entryTokens, decimals)} ${symbol}`;
+      const exact = formatTokenExact(entryTokens, decimals);
       main.textContent = shown;
       btn.dataset.copy = exact;
       btn.title = `Copy ${exact}`;
     } else {
       main.textContent = "$30";
-      btn.dataset.copy = usdLabel;
+      btn.dataset.copy = "30";
       btn.title = "Copy entry fee";
     }
   }
@@ -264,7 +267,7 @@
     const btn = document.getElementById("stat-entry");
     if (!btn || btn.dataset.bound) return;
     btn.dataset.bound = "1";
-    if (!btn.dataset.copy) btn.dataset.copy = "worth $30 USD";
+    if (!btn.dataset.copy) btn.dataset.copy = "30";
     if (!btn.dataset.usdShown) btn.dataset.usdShown = "worth $30 USD";
     btn.addEventListener("click", async () => {
       const text = btn.dataset.copy;

@@ -1230,64 +1230,98 @@ blockquote cite {
 
 .ca-chip {
   appearance: none;
+  position: relative;
   display: flex;
-  width: fit-content;
+  width: 100%;
+  max-width: 364px;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin: 0 auto 12px;
+  padding: 11px 14px 10px;
+  border: 1px dashed rgba(234, 219, 183, 0.42);
+  color: #fff4d8;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(234, 219, 183, 0.14),
+      transparent 12px
+    ),
+    rgba(12, 9, 7, 0.55);
+  cursor: pointer;
+  text-align: center;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease;
+}
+
+.ca-chip:hover {
+  border-color: rgba(234, 219, 183, 0.72);
+  background:
+    linear-gradient(
+      90deg,
+      rgba(234, 219, 183, 0.22),
+      transparent 14px
+    ),
+    rgba(18, 13, 10, 0.72);
+}
+
+.ca-chip-key {
+  color: rgba(234, 219, 183, 0.78);
+  font-family: "IM Fell English SC", serif;
+  font-size: 0.52rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.ca-chip-main-row {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
   max-width: 100%;
-  margin: 0 auto 16px;
-  padding: 7px 12px 6px;
-  border: 1px solid rgba(234, 219, 183, 0.35);
-  color: #fff4d8;
-  background: rgba(17, 12, 9, 0.72);
-  cursor: pointer;
-  transition:
-    border-color 0.2s ease,
-    background 0.2s ease,
-    color 0.2s ease;
-}
-
-.ca-chip:hover {
-  border-color: rgba(234, 219, 183, 0.7);
-  background: rgba(24, 17, 12, 0.9);
-}
-
-.ca-chip-key {
-  color: var(--gold);
-  font-family: "IM Fell English SC", serif;
-  font-size: 0.52rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
 }
 
 .ca-chip-addr {
   color: #fff6e0;
   font-family: var(--num);
-  font-size: 0.78rem;
+  font-size: clamp(0.82rem, 2.2vw, 0.98rem);
   font-weight: 600;
   font-variant-numeric: tabular-nums;
-  letter-spacing: 0.04em;
-  line-height: 1;
+  letter-spacing: 0.05em;
+  line-height: 1.15;
+  word-break: break-all;
 }
 
 .ca-chip-copy {
-  color: rgba(234, 219, 183, 0.72);
-  font-size: 0.78rem;
+  flex: 0 0 auto;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.88rem;
   line-height: 1;
   transition: color 0.2s ease;
 }
 
 .ca-chip:hover .ca-chip-copy {
-  color: var(--gold);
+  color: #fff;
+}
+
+.ca-chip-hint {
+  margin-top: 2px;
+  color: #fff;
+  font-family: "IM Fell English", Georgia, serif;
+  font-size: 0.62rem;
+  font-style: italic;
+  letter-spacing: 0.04em;
 }
 
 .ca-chip.copied {
   border-color: var(--gold);
+  border-style: solid;
 }
 
 .ca-chip.copied .ca-chip-addr,
-.ca-chip.copied .ca-chip-copy {
+.ca-chip.copied .ca-chip-copy,
+.ca-chip.copied .ca-chip-hint {
   color: var(--gold);
 }
 
@@ -1690,7 +1724,7 @@ button.live-metric-copy:hover .entry-main {
 
 .entry-copy-hint {
   margin-top: 4px;
-  color: #7d6a4a;
+  color: #fff;
   font-family: "IM Fell English", Georgia, serif;
   font-size: 0.62rem;
   font-style: italic;
