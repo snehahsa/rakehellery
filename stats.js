@@ -135,18 +135,15 @@
       if (!ok) return;
       btn.classList.add("copied");
       const icon = btn.querySelector(".ca-chip-copy");
-      const hint = btn.querySelector(".ca-chip-hint");
       const prev = addrEl.textContent;
       const prevIcon = icon?.textContent || "⧉";
       addrEl.textContent = "Copied";
       if (icon) icon.textContent = "✓";
-      if (hint) hint.textContent = "Copied";
       clearTimeout(btn._copyTimer);
       btn._copyTimer = setTimeout(() => {
         btn.classList.remove("copied");
         addrEl.textContent = prev;
         if (icon) icon.textContent = prevIcon;
-        if (hint) hint.textContent = "Click to copy";
       }, 1100);
     });
   }
