@@ -15,6 +15,10 @@
   const ALCHEMY_KEY = "rakehellery-alchemy";
   // Change this when the real CA is live. Optional override: ?ca=0x...
   const CONTRACT_ADDRESS = "0xa59565957a93882253647e150d2D8FA43F63033e";
+  // Constructor mint; net burn = INITIAL − totalSupply when costs work on-chain.
+  const INITIAL_SUPPLY = 10_000_000_000n * 10n ** 18n;
+  // After settlement: 60% 1st + 20% 2nd reminted; 20% stays burned.
+  const BURN_RETAIN_PCT = 20n;
   const REFRESH_MS = 45000;
 
   const S = {
@@ -741,18 +745,46 @@
         }
       }
 
-      // Burnt display: sum token balances sitting on seat addresses 1–6.
-      const seatBalCalls = [];
-      for (let seat = 1; seat <= PLAYERS; seat++) {
-        seatBalCalls.push({
-          target: ca,
-          data: callData(S.balanceOf, encodeAddress(slotAddress(seat))),
-        });
-      }
-      const seatBalOut = await parallelCalls(seatBalCalls);
-      let burned = 0n;
-      for (const r of seatBalOut) {
-        if (r?.success) burned += decodeUint(r.returnData);
+      // Burnt: prefer true supply delta (ERC-20 _burn). Seat wallets are never
+      // funded — entries burn, then 80% remints on settle, 20% stays gone.
+      // If supply is unchanged (e.g. gameCostUSDX96 set as plain dollars → cost 0),
+      // estimate from game seats × live entry and the 20% retain rule.
+      let burned = supply < INITIAL_SUPPLY ? INITIAL_SUPPLY - supply : 0n;
+      if (
+        burned === 0n &&
+        currentGame > 0 &&
+        entryTokens != null &&
+        entryTokens > 0n
+      ) {
+        const scan = [];
+        for (let g = 1; g <= currentGame; g++) {
+          scan.push({
+            target: ca,
+            data: callData(S.gameResults, pad32(g)),
+          });
+          scan.push({
+            target: ca,
+            data: callData(S.gameCostTokens, pad32(g)),
+          });
+        }
+        const scanOut = await parallelCalls(scan);
+        let est = 0n;
+        for (let g = 1; g <= currentGame; g++) {
+          const ri = (g - 1) * 2;
+          const slot = scanOut[ri]?.success
+            ? decodeAddress(scanOut[ri].returnData)
+            : ZERO;
+          let cost = scanOut[ri + 1]?.success
+            ? decodeUint(scanOut[ri + 1].returnData)
+            : 0n;
+          if (cost === 0n) cost = entryTokens;
+          if (slot !== ZERO) {
+            est += (cost * BigInt(PLAYERS) * BURN_RETAIN_PCT) / 100n;
+          } else if (g === currentGame && seatsFilled > 0) {
+            est += cost * BigInt(seatsFilled);
+          }
+        }
+        burned = est;
       }
 
       let statusLine;
