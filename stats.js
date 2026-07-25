@@ -255,16 +255,16 @@
       if (dec <= 0n || dec > 36n) dec = 18n;
       const whole = entryTokens / 10n ** dec;
       const rounded = roundUpDisplayTokens(whole);
-      main.textContent = `~${formatCommaInt(rounded)} ${symbol}`;
+      main.textContent = `${formatCommaInt(rounded)} ${symbol}`;
       if (noteEl) {
         noteEl.textContent =
-          "Rounded up. Exact fee is charged automatically.";
+          "Actual fee is lower — lowered automatically to the exact amount.";
       }
     } else {
       main.textContent = "$30";
       if (noteEl) {
         noteEl.textContent =
-          "Rounded up. Exact fee is charged automatically.";
+          "Actual fee is lower — lowered automatically to the exact amount.";
       }
     }
   }
