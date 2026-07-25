@@ -15,7 +15,6 @@
   const ALCHEMY_KEY = "rakehellery-alchemy";
   // Change this when the real CA is live. Optional override: ?ca=0x...
   const CONTRACT_ADDRESS = "0xa59565957a93882253647e150d2D8FA43F63033e";
-  const BURN_SCAN_CAP = 20;
   const REFRESH_MS = 45000;
 
   const S = {
@@ -27,6 +26,7 @@
     totalSupply: "0x18160ddd",
     decimals: "0x313ce567",
     symbol: "0x95d89b41",
+    balanceOf: "0x70a08231",
     gameResults: "0xfdba1b7c",
     gameRunnerUps: "0x245d19cd",
     gamePlayers: "0x62e2961b",
@@ -159,31 +159,19 @@
       el.textContent = "—";
       el.removeAttribute("href");
       el.removeAttribute("title");
+      el.removeAttribute("target");
+      el.removeAttribute("rel");
       el.classList.remove("addr-copyable");
       delete el.dataset.addr;
       return;
     }
     el.textContent = shortAddr(addr);
-    el.href = "#";
+    el.href = explorerUrl(addr);
+    el.target = "_blank";
+    el.rel = "noreferrer";
     el.dataset.addr = addr;
-    el.classList.add("addr-copyable");
-    el.title = `Click to copy ${addr}`;
-  }
-
-  async function copyAddrEl(el) {
-    const addr = el?.dataset?.addr;
-    if (!addr) return false;
-    const ok = await copyText(addr);
-    if (!ok) return false;
-    el.classList.add("copied");
-    const prev = el.textContent;
-    el.textContent = "Copied";
-    clearTimeout(el._copyTimer);
-    el._copyTimer = setTimeout(() => {
-      el.classList.remove("copied");
-      el.textContent = prev;
-    }, 1200);
-    return true;
+    el.classList.remove("addr-copyable");
+    el.title = `Open on explorer`;
   }
 
   function slotAddress(n) {
@@ -226,6 +214,13 @@
 
   function formatCommaInt(n) {
     return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
+
+  // Full token count with commas (no K/M/B abbreviation).
+  function formatTokenCount(amount, decimals = 18n) {
+    let dec = BigInt(decimals);
+    if (dec <= 0n || dec > 36n) dec = 18n;
+    return formatCommaInt(amount / 10n ** dec);
   }
 
   // Round UP to 2 significant digits (593039 → 600000, 5930039 → 6000000).
@@ -424,11 +419,9 @@
     };
 
     board.addEventListener("click", async (e) => {
-      const player = e.target.closest("a.seat-player.addr-copyable");
+      const player = e.target.closest("a.seat-player[href^='http']");
       if (player) {
-        e.preventDefault();
         e.stopPropagation();
-        await copyAddrEl(player);
         return;
       }
       const row = e.target.closest(".seat-row");
@@ -440,15 +433,6 @@
       if (!row) return;
       e.preventDefault();
       onActivate(row);
-    });
-  }
-
-  function initAddrCopy() {
-    document.body.addEventListener("click", async (e) => {
-      const el = e.target.closest("a.victor-val.addr-copyable, a.addr-copyable");
-      if (!el || el.closest("#seat-board")) return;
-      e.preventDefault();
-      await copyAddrEl(el);
     });
   }
 
@@ -507,12 +491,12 @@
       if (player) {
         if (filled) {
           player.textContent = shortAddr(occupant);
-          player.href = "#";
+          player.href = explorerUrl(occupant);
+          player.target = "_blank";
+          player.rel = "noreferrer";
           player.dataset.addr = occupant;
-          player.classList.add("addr-copyable");
-          player.title = `Click to copy ${occupant}`;
-          player.removeAttribute("target");
-          player.removeAttribute("rel");
+          player.classList.remove("addr-copyable");
+          player.title = "Open on explorer";
         } else {
           player.textContent = "—";
           player.removeAttribute("href");
@@ -646,11 +630,6 @@
           data: callData(S.gameRunnerUps, pad32(g)),
         });
         pTags.push(`runner${g}`);
-        priority.push({
-          target: ca,
-          data: callData(S.gameCostTokens, pad32(g)),
-        });
-        pTags.push(`cost${g}`);
       }
 
       const pOut = await parallelCalls(priority);
@@ -715,7 +694,6 @@
       let settledGame = 0;
       let winSlot = ZERO;
       let runSlot = ZERO;
-      let poolCost = 0n;
 
       for (const g of gamesToCheck) {
         const slot = by[`result${g}`]?.success
@@ -727,9 +705,6 @@
           runSlot = by[`runner${g}`]?.success
             ? decodeAddress(by[`runner${g}`].returnData)
             : ZERO;
-          poolCost = by[`cost${g}`]?.success
-            ? decodeUint(by[`cost${g}`].returnData)
-            : 0n;
           break;
         }
       }
@@ -766,56 +741,18 @@
         }
       }
 
-      // Secondary: burn totals (can lag without breaking Crown/Consolation).
+      // Burnt display: sum token balances sitting on seat addresses 1–6.
+      const seatBalCalls = [];
+      for (let seat = 1; seat <= PLAYERS; seat++) {
+        seatBalCalls.push({
+          target: ca,
+          data: callData(S.balanceOf, encodeAddress(slotAddress(seat))),
+        });
+      }
+      const seatBalOut = await parallelCalls(seatBalCalls);
       let burned = 0n;
-      let settledCount = 0;
-      const burnMax = Math.min(currentGame, BURN_SCAN_CAP);
-      if (burnMax > 0) {
-        const burnCalls = [];
-        const burnTags = [];
-        for (let g = 1; g <= burnMax; g++) {
-          // Reuse already-fetched recent games when possible.
-          if (by[`result${g}`] && by[`cost${g}`]) {
-            const slot = by[`result${g}`].success
-              ? decodeAddress(by[`result${g}`].returnData)
-              : ZERO;
-            if (slot === ZERO) continue;
-            const cost = by[`cost${g}`].success
-              ? decodeUint(by[`cost${g}`].returnData)
-              : 0n;
-            // 5/18 of pool stays burned (~27.8%)
-            burned += (cost * BigInt(PLAYERS) * 5n) / 18n;
-            settledCount++;
-            continue;
-          }
-          burnCalls.push({
-            target: ca,
-            data: callData(S.gameResults, pad32(g)),
-          });
-          burnTags.push(`bR${g}`);
-          burnCalls.push({
-            target: ca,
-            data: callData(S.gameCostTokens, pad32(g)),
-          });
-          burnTags.push(`bC${g}`);
-        }
-        if (burnCalls.length) {
-          const bOut = await parallelCalls(burnCalls);
-          const bBy = Object.fromEntries(burnTags.map((t, i) => [t, bOut[i]]));
-          for (let g = 1; g <= burnMax; g++) {
-            if (by[`result${g}`] && by[`cost${g}`]) continue;
-            const slot = bBy[`bR${g}`]?.success
-              ? decodeAddress(bBy[`bR${g}`].returnData)
-              : ZERO;
-            if (slot === ZERO) continue;
-            const cost = bBy[`bC${g}`]?.success
-              ? decodeUint(bBy[`bC${g}`].returnData)
-              : 0n;
-            // 5/18 of pool stays burned (~27.8%)
-            burned += (cost * BigInt(PLAYERS) * 5n) / 18n;
-            settledCount++;
-          }
-        }
+      for (const r of seatBalOut) {
+        if (r?.success) burned += decodeUint(r.returnData);
       }
 
       let statusLine;
@@ -896,20 +833,9 @@
       setAddrLink("stat-winner", winnerWallet);
       setAddrLink("stat-runner", runnerWallet);
       setText(
-        "stat-pool",
-        poolCost > 0n
-          ? `${formatTokens(poolCost * BigInt(PLAYERS), decimals)} ${symbol}`
-          : "—",
-      );
-      setText(
         "stat-burnt",
-        burned > 0n
-          ? `${formatTokens(burned, decimals)} ${symbol}${
-              currentGame > BURN_SCAN_CAP ? "+" : ""
-            }`
-          : "—",
+        `~${formatTokenCount(burned, decimals)} ${symbol}`,
       );
-      setText("stat-supply", `${formatTokens(supply, decimals)} ${symbol}`);
 
       if (statusEl) statusEl.textContent = statusLine;
       if (noteEl) {
@@ -918,12 +844,7 @@
           minute: "2-digit",
         });
         const source = USE_ALCHEMY ? "Robinhood · Alchemy" : "Robinhood RPC";
-        noteEl.textContent =
-          currentGame > BURN_SCAN_CAP
-            ? `${source} · burn covers first ${BURN_SCAN_CAP} settled games · ${time}`
-            : `${source} · ${settledCount} settled game${
-                settledCount === 1 ? "" : "s"
-              } · ${time}`;
+        noteEl.textContent = `${source} · ${time}`;
       }
       if (ledger) ledger.dataset.ready = "1";
     } catch (err) {
@@ -940,7 +861,6 @@
     const ledger = document.getElementById("live-ledger");
     if (!ledger) return;
     initSeatBoard();
-    initAddrCopy();
     initSeatMapCopy();
 
     const ca = resolveCa();
