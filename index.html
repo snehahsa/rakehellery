@@ -17,7 +17,7 @@
       href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=Libre+Baskerville:wght@400;700&family=UnifrakturCook:wght@700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./styles.css?v=37" />
+    <link rel="stylesheet" href="./styles.css?v=42" />
   </head>
   <body>
     <div class="paper-noise" aria-hidden="true"></div>
@@ -76,6 +76,32 @@
               >
             </div>
           </div>
+
+          <button
+            type="button"
+            class="ca-chip"
+            id="ca-chip"
+            title="Click to copy contract address"
+          >
+            <span class="ca-chip-key">CA</span>
+            <span class="ca-chip-addr" id="ca-chip-addr">—</span>
+            <span class="ca-chip-copy" aria-hidden="true">⧉</span>
+          </button>
+
+          <button
+            type="button"
+            class="entry-banner"
+            id="stat-entry"
+            title="Copy current entry fee"
+          >
+            <span class="entry-banner-key">Current entry fee</span>
+            <span class="entry-main-row">
+              <span class="entry-main" id="stat-entry-main">—</span>
+              <span class="entry-copy-icon" aria-hidden="true">⧉</span>
+            </span>
+            <span class="entry-usd" id="stat-entry-usd">worth $30 USD</span>
+            <span class="entry-copy-hint">Click to copy</span>
+          </button>
 
           <div class="seat-board">
             <div class="seat-ledger">
@@ -204,24 +230,12 @@
                 </tbody>
               </table>
               <p class="seat-board-hint">
-                Click a row to copy the seat · click player to open on Etherscan
+                Click a row to copy the seat · click a player address to copy it
               </p>
             </div>
           </div>
 
           <div class="live-metrics">
-            <div class="live-metric">
-              <span class="live-metric-key">Entry</span>
-              <button
-                type="button"
-                class="live-metric-val live-metric-copy"
-                id="stat-entry"
-                title="Copy entry amount"
-              >
-                <span class="entry-main" id="stat-entry-main">—</span>
-                <span class="entry-usd" id="stat-entry-usd"></span>
-              </button>
-            </div>
             <div class="live-metric">
               <span class="live-metric-key">Last Pool</span>
               <span class="live-metric-val" id="stat-pool">—</span>
@@ -285,7 +299,7 @@
         <div class="how-stack">
           <p class="drop-cap">
             Rakehellery is a 6-player on-chain game built into CA. Entry is
-            <strong>$30 worth of tokens</strong> per seat. You pick an empty
+            <strong>worth $30 USD</strong> of tokens per seat. You pick an empty
             seat by sending tokens to that seat address. Your entry is burnt as
             the stake.
           </p>
@@ -342,7 +356,7 @@
               <div class="roman">II</div>
               <h3>Entry burns</h3>
               <p>
-                Entry fee is <strong>$30</strong> worth of tokens. The contract
+                Entry fee is <strong>worth $30 USD</strong> of tokens. The contract
                 burns that specific amount from your balance automatically when you pick a seat. 
               </p>
             </article>
@@ -392,13 +406,13 @@
         <div class="ornament">✦</div>
         <h2>At a Glance</h2>
         <p class="section-intro">
-          Fixed rules every game: $30 entry, six seats, $100 / $30 / $50 split.
+          Fixed rules every game: entry worth $30 USD, six seats, $100 / $30 / $50 split.
         </p>
 
         <div class="chronicle-grid">
           <div class="tally">
             <span>$30</span>
-            <p>Entry fee per seat</p>
+            <p>Entry worth $30 USD</p>
           </div>
           <div class="tally">
             <span>VI</span>
@@ -413,8 +427,8 @@
         <div class="motto-box">
           <span class="motto-label">Quick tip</span>
           <p id="motto">
-            Entry fee is $30 worth of tokens — send any tiny amount to a seat;
-            the contract burns the full $30 from your balance.
+            Entry fee is worth $30 USD of tokens — send any tiny amount to a seat;
+            the contract burns the full $30 USD from your balance.
           </p>
           <button id="new-motto" type="button">Next tip</button>
         </div>
@@ -511,7 +525,7 @@
       <span>MMXXVI</span>
     </footer>
 
-    <script src="./script.js?v=6"></script>
-    <script src="./stats.js?v=22"></script>
+    <script src="./script.js?v=7"></script>
+    <script src="./stats.js?v=30"></script>
   </body>
 </html>

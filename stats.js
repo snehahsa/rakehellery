@@ -1,21 +1,20 @@
 (() => {
-  // 1) Preferred: Alchemy free RPC (paste full HTTPS URL).
-  //    Get one in ~1 min: https://dashboard.alchemy.com → app → Ethereum → API key
-  //    Optional overrides: ?alchemy=https://eth-mainnet.g.alchemy.com/v2/KEY
-  //                      or localStorage rakehellery-alchemy
+  // Robinhood Chain (chainId 4663). Preferred: Alchemy Robinhood RPC.
+  // Optional overrides: ?alchemy=https://robinhood-mainnet.g.alchemy.com/v2/KEY
+  //                   or localStorage rakehellery-alchemy
   const ALCHEMY_RPC_DEFAULT =
-    "https://eth-mainnet.g.alchemy.com/v2/9poJOAJQy5Got7Wpv8cO7";
-  // 2) Fallback only: Etherscan (rate-limited — causes blank winners/seats)
-  const ETHERSCAN_API_KEY = "ZKC13M92IMVCFUCS768RG7P2QFW74IJ6K1";
-  const ETHERSCAN_API = "https://api.etherscan.io/v2/api";
-  const CHAIN_ID = 1;
+    "https://robinhood-mainnet.g.alchemy.com/v2/9poJOAJQy5Got7Wpv8cO7";
+  // Fallback: public Robinhood RPC (rate-limited)
+  const PUBLIC_RPC = "https://rpc.mainnet.chain.robinhood.com";
+  const CHAIN_ID = 4663;
+  const EXPLORER_URL = "https://robinhoodchain.blockscout.com";
   const Q96 = 2n ** 96n;
   const PLAYERS = 6;
   const ZERO = "0x0000000000000000000000000000000000000000";
   const STORAGE_KEY = "rakehellery-ca";
   const ALCHEMY_KEY = "rakehellery-alchemy";
   // Change this when the real CA is live. Optional override: ?ca=0x...
-  const CONTRACT_ADDRESS = "0xDc06B8DD02A9e6a5eD17818c873743496C6f67c7";
+  const CONTRACT_ADDRESS = "0xa59565957a93882253647e150d2D8FA43F63033e";
   const BURN_SCAN_CAP = 20;
   const REFRESH_MS = 45000;
 
@@ -24,6 +23,7 @@
     gameEnabled: "0xe1565ca9",
     gameCostUSDX96: "0xe68e917e",
     getGameCostTokens: "0x5f01b1d1",
+    safeTokenPriceUSDX96: "0xd145c895",
     totalSupply: "0x18160ddd",
     decimals: "0x313ce567",
     symbol: "0x95d89b41",
@@ -32,6 +32,7 @@
     gamePlayers: "0x62e2961b",
     gameCostTokens: "0x30a542a5",
   };
+  const DEFAULT_ENTRY_USD = 30n;
 
   function resolveAlchemyRpc() {
     const params = new URLSearchParams(window.location.search);
@@ -41,7 +42,15 @@
       return fromQuery;
     }
     const saved = localStorage.getItem(ALCHEMY_KEY);
-    if (saved && /^https:\/\//i.test(saved)) return saved;
+    // Drop stale Ethereum-mainnet RPCs saved from the old site config.
+    if (
+      saved &&
+      /^https:\/\//i.test(saved) &&
+      !/eth-mainnet|mainnet\.infura|ethereum/i.test(saved)
+    ) {
+      return saved;
+    }
+    if (saved) localStorage.removeItem(ALCHEMY_KEY);
     if (ALCHEMY_RPC_DEFAULT && !ALCHEMY_RPC_DEFAULT.includes("YOUR_KEY")) {
       return ALCHEMY_RPC_DEFAULT;
     }
@@ -50,6 +59,7 @@
 
   const ALCHEMY_RPC = resolveAlchemyRpc();
   const USE_ALCHEMY = Boolean(ALCHEMY_RPC);
+  const RPC_URL = ALCHEMY_RPC || PUBLIC_RPC;
 
   function pad32(value) {
     const hex =
@@ -104,8 +114,42 @@
     return `${addr.slice(0, 6)}…${addr.slice(-4)}`;
   }
 
-  function etherscanUrl(addr) {
-    return `https://etherscan.io/address/${addr}`;
+  function shortCa(addr) {
+    if (!addr || addr === ZERO) return "—";
+    return `${addr.slice(0, 6)}…${addr.slice(-8)}`;
+  }
+
+  function initCaChip(ca) {
+    const btn = document.getElementById("ca-chip");
+    const addrEl = document.getElementById("ca-chip-addr");
+    if (!btn || !addrEl || !isAddress(ca)) return;
+    addrEl.textContent = shortCa(ca);
+    btn.dataset.addr = ca;
+    btn.title = `Click to copy ${ca}`;
+    if (btn.dataset.bound) return;
+    btn.dataset.bound = "1";
+    btn.addEventListener("click", async () => {
+      const addr = btn.dataset.addr;
+      if (!addr) return;
+      const ok = await copyText(addr);
+      if (!ok) return;
+      btn.classList.add("copied");
+      const icon = btn.querySelector(".ca-chip-copy");
+      const prev = addrEl.textContent;
+      const prevIcon = icon?.textContent || "⧉";
+      addrEl.textContent = "Copied";
+      if (icon) icon.textContent = "✓";
+      clearTimeout(btn._copyTimer);
+      btn._copyTimer = setTimeout(() => {
+        btn.classList.remove("copied");
+        addrEl.textContent = prev;
+        if (icon) icon.textContent = prevIcon;
+      }, 1100);
+    });
+  }
+
+  function explorerUrl(addr) {
+    return `${EXPLORER_URL}/address/${addr}`;
   }
 
   function setAddrLink(id, addr) {
@@ -115,11 +159,31 @@
       el.textContent = "—";
       el.removeAttribute("href");
       el.removeAttribute("title");
+      el.classList.remove("addr-copyable");
+      delete el.dataset.addr;
       return;
     }
     el.textContent = shortAddr(addr);
-    el.href = etherscanUrl(addr);
-    el.title = addr;
+    el.href = "#";
+    el.dataset.addr = addr;
+    el.classList.add("addr-copyable");
+    el.title = `Click to copy ${addr}`;
+  }
+
+  async function copyAddrEl(el) {
+    const addr = el?.dataset?.addr;
+    if (!addr) return false;
+    const ok = await copyText(addr);
+    if (!ok) return false;
+    el.classList.add("copied");
+    const prev = el.textContent;
+    el.textContent = "Copied";
+    clearTimeout(el._copyTimer);
+    el._copyTimer = setTimeout(() => {
+      el.classList.remove("copied");
+      el.textContent = prev;
+    }, 1200);
+    return true;
   }
 
   function slotAddress(n) {
@@ -157,25 +221,42 @@
     return `$${usd >= 10 ? usd.toFixed(0) : usd.toFixed(2)}`;
   }
 
+  // Owner sometimes passes plain dollars (e.g. 5) instead of dollars * Q96.
+  function normalizeCostUsdX96(raw) {
+    if (raw == null || raw <= 0n) return DEFAULT_ENTRY_USD * Q96;
+    if (raw < Q96) return raw * Q96;
+    return raw;
+  }
+
+  function tokensForUsdX96(costUsdX96, priceX96, decimals) {
+    if (!costUsdX96 || !priceX96 || priceX96 <= 0n) return null;
+    const dec = BigInt(decimals);
+    return (costUsdX96 * 10n ** dec) / priceX96;
+  }
+
   function setEntryDisplay(entryTokens, decimals, symbol, costUsdX96) {
     const btn = document.getElementById("stat-entry");
     const main = document.getElementById("stat-entry-main");
     const usdEl = document.getElementById("stat-entry-usd");
     if (!btn || !main || !usdEl) return;
 
-    const usd = formatUsdFromX96(costUsdX96);
-    if (entryTokens != null) {
-      main.textContent = `${formatTokens(entryTokens, decimals)} ${symbol}`;
-      usdEl.textContent = `(${usd})`;
-      btn.dataset.copy = `${formatTokenExact(entryTokens, decimals)} ${symbol} (${usd})`;
-      btn.dataset.usdShown = `(${usd})`;
-      btn.title = `Copy ${btn.dataset.copy}`;
+    const usdLabel =
+      costUsdX96 && costUsdX96 > 0n
+        ? `worth ${formatUsdFromX96(costUsdX96)} USD`
+        : "worth $30 USD";
+    usdEl.textContent = usdLabel;
+    btn.dataset.usdShown = usdLabel;
+
+    if (entryTokens != null && entryTokens > 0n) {
+      const shown = `${formatTokens(entryTokens, decimals)} ${symbol}`;
+      const exact = `${formatTokenExact(entryTokens, decimals)} ${symbol}`;
+      main.textContent = shown;
+      btn.dataset.copy = exact;
+      btn.title = `Copy ${exact}`;
     } else {
-      main.textContent = usd;
-      usdEl.textContent = "";
-      btn.dataset.copy = usd;
-      btn.dataset.usdShown = "";
-      btn.title = `Copy ${usd}`;
+      main.textContent = "$30";
+      btn.dataset.copy = usdLabel;
+      btn.title = "Copy entry fee";
     }
   }
 
@@ -183,6 +264,8 @@
     const btn = document.getElementById("stat-entry");
     if (!btn || btn.dataset.bound) return;
     btn.dataset.bound = "1";
+    if (!btn.dataset.copy) btn.dataset.copy = "worth $30 USD";
+    if (!btn.dataset.usdShown) btn.dataset.usdShown = "worth $30 USD";
     btn.addEventListener("click", async () => {
       const text = btn.dataset.copy;
       if (!text || text === "—") return;
@@ -190,13 +273,19 @@
       if (!ok) return;
       btn.classList.add("copied");
       const usdEl = document.getElementById("stat-entry-usd");
-      const prev = btn.dataset.usdShown || usdEl?.textContent || "";
-      btn.dataset.usdShown = prev;
-      if (usdEl) usdEl.textContent = "(copied)";
+      const icon = btn.querySelector(".entry-copy-icon");
+      const hint = btn.querySelector(".entry-copy-hint");
+      const prevUsd = btn.dataset.usdShown || "worth $30 USD";
+      const prevIcon = icon?.textContent || "⧉";
+      if (usdEl) usdEl.textContent = "copied";
+      if (icon) icon.textContent = "✓";
+      if (hint) hint.textContent = "Copied";
       clearTimeout(btn._copyTimer);
       btn._copyTimer = setTimeout(() => {
         btn.classList.remove("copied");
-        if (usdEl) usdEl.textContent = btn.dataset.usdShown || "";
+        if (usdEl) usdEl.textContent = prevUsd;
+        if (icon) icon.textContent = prevIcon;
+        if (hint) hint.textContent = "Click to copy";
       }, 1100);
     });
   }
@@ -205,8 +294,8 @@
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
-  async function ethCallAlchemy(to, data) {
-    const res = await fetch(ALCHEMY_RPC, {
+  async function ethCallRpc(rpcUrl, to, data) {
+    const res = await fetch(rpcUrl, {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({
@@ -216,54 +305,27 @@
         params: [{ to, data }, "latest"],
       }),
     });
-    if (!res.ok) throw new Error(`Alchemy HTTP ${res.status}`);
+    if (!res.ok) throw new Error(`RPC HTTP ${res.status}`);
     const json = await res.json();
-    if (json.error) throw new Error(json.error.message || "Alchemy error");
+    if (json.error) throw new Error(json.error.message || "RPC error");
     if (typeof json.result === "string" && json.result.startsWith("0x")) {
       return json.result;
     }
-    throw new Error("Unexpected Alchemy response");
-  }
-
-  async function ethCallEtherscan(to, data) {
-    const url = new URL(ETHERSCAN_API);
-    url.searchParams.set("chainid", String(CHAIN_ID));
-    url.searchParams.set("module", "proxy");
-    url.searchParams.set("action", "eth_call");
-    url.searchParams.set("to", to);
-    url.searchParams.set("data", data);
-    url.searchParams.set("tag", "latest");
-    url.searchParams.set("apikey", ETHERSCAN_API_KEY);
-
-    const res = await fetch(url.toString());
-    if (!res.ok) throw new Error(`Etherscan HTTP ${res.status}`);
-    const json = await res.json();
-    if (json.error) {
-      throw new Error(json.error.message || "Etherscan proxy error");
-    }
-    if (typeof json.result === "string" && json.result.startsWith("0x")) {
-      return json.result;
-    }
-    if (
-      json.message &&
-      /rate|max|notok/i.test(String(json.message) + String(json.result || ""))
-    ) {
-      throw new Error(String(json.result || json.message));
-    }
-    if (json.status === "0") {
-      throw new Error(
-        String(json.result || json.message || "Etherscan call failed"),
-      );
-    }
-    throw new Error(String(json.result || "Unexpected Etherscan response"));
+    throw new Error("Unexpected RPC response");
   }
 
   async function ethCall(to, data) {
-    if (USE_ALCHEMY) return ethCallAlchemy(to, data);
-    return ethCallEtherscan(to, data);
+    try {
+      return await ethCallRpc(RPC_URL, to, data);
+    } catch (err) {
+      if (RPC_URL !== PUBLIC_RPC) {
+        return ethCallRpc(PUBLIC_RPC, to, data);
+      }
+      throw err;
+    }
   }
 
-  async function softCall(to, data, retries = USE_ALCHEMY ? 1 : 2) {
+  async function softCall(to, data, retries = 2) {
     let lastErr;
     for (let attempt = 0; attempt <= retries; attempt++) {
       try {
@@ -277,7 +339,7 @@
     return { success: false, returnData: "0x" };
   }
 
-  async function alchemyBatch(calls) {
+  async function rpcBatch(rpcUrl, calls) {
     const chunkSize = 50;
     const results = [];
     for (let i = 0; i < calls.length; i += chunkSize) {
@@ -288,12 +350,12 @@
         method: "eth_call",
         params: [{ to: c.target, data: c.data }, "latest"],
       }));
-      const res = await fetch(ALCHEMY_RPC, {
+      const res = await fetch(rpcUrl, {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify(body),
       });
-      if (!res.ok) throw new Error(`Alchemy batch HTTP ${res.status}`);
+      if (!res.ok) throw new Error(`RPC batch HTTP ${res.status}`);
       const json = await res.json();
       const arr = Array.isArray(json) ? json : [json];
       const byId = Object.fromEntries(arr.map((row) => [row.id, row]));
@@ -311,18 +373,22 @@
 
   async function parallelCalls(calls) {
     if (!calls.length) return [];
-    if (USE_ALCHEMY) {
+    try {
+      return await rpcBatch(RPC_URL, calls);
+    } catch (err) {
+      console.warn("RPC batch failed, trying fallback", err);
+    }
+    if (RPC_URL !== PUBLIC_RPC) {
       try {
-        return await alchemyBatch(calls);
+        return await rpcBatch(PUBLIC_RPC, calls);
       } catch (err) {
-        console.warn("Alchemy batch failed, falling back", err);
+        console.warn("Public RPC batch failed, falling back", err);
       }
     }
-    // Etherscan free tier ~5 req/s
-    const chunkSize = 2;
+    const chunkSize = 4;
     const results = [];
     for (let i = 0; i < calls.length; i += chunkSize) {
-      if (i > 0) await sleep(320);
+      if (i > 0) await sleep(200);
       const chunk = calls.slice(i, i + chunkSize);
       const part = await Promise.all(
         chunk.map((c) => softCall(c.target, c.data)),
@@ -382,8 +448,14 @@
       }, 1200);
     };
 
-    board.addEventListener("click", (e) => {
-      if (e.target.closest("a.seat-player[href^='http']")) return;
+    board.addEventListener("click", async (e) => {
+      const player = e.target.closest("a.seat-player.addr-copyable");
+      if (player) {
+        e.preventDefault();
+        e.stopPropagation();
+        await copyAddrEl(player);
+        return;
+      }
       const row = e.target.closest(".seat-row");
       if (row) onActivate(row);
     });
@@ -393,6 +465,52 @@
       if (!row) return;
       e.preventDefault();
       onActivate(row);
+    });
+  }
+
+  function initAddrCopy() {
+    document.body.addEventListener("click", async (e) => {
+      const el = e.target.closest("a.victor-val.addr-copyable, a.addr-copyable");
+      if (!el || el.closest("#seat-board")) return;
+      e.preventDefault();
+      await copyAddrEl(el);
+    });
+  }
+
+  function initSeatMapCopy() {
+    document.querySelectorAll(".seat-map code, .game-grid code").forEach((code) => {
+      const text = code.textContent.trim();
+      const slotMatch = text.match(/0x0+…0*([1-6])$/i) || text.match(/#([1-6])/);
+      let addr = code.dataset.addr;
+      if (!addr) {
+        const n = slotMatch ? Number(slotMatch[1]) : 0;
+        if (n >= 1 && n <= 6) addr = slotAddress(n);
+      }
+      if (!addr) return;
+      code.dataset.addr = addr;
+      code.classList.add("addr-copyable");
+      code.title = `Click to copy ${addr}`;
+      code.setAttribute("role", "button");
+      code.tabIndex = 0;
+      const activate = async () => {
+        const ok = await copyText(addr);
+        if (!ok) return;
+        const prev = code.textContent;
+        code.classList.add("copied");
+        code.textContent = "Copied";
+        clearTimeout(code._copyTimer);
+        code._copyTimer = setTimeout(() => {
+          code.classList.remove("copied");
+          code.textContent = prev;
+        }, 1200);
+      };
+      code.addEventListener("click", activate);
+      code.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          activate();
+        }
+      });
     });
   }
 
@@ -414,16 +532,20 @@
       if (player) {
         if (filled) {
           player.textContent = shortAddr(occupant);
-          player.href = etherscanUrl(occupant);
-          player.title = occupant;
-          player.target = "_blank";
-          player.rel = "noreferrer";
+          player.href = "#";
+          player.dataset.addr = occupant;
+          player.classList.add("addr-copyable");
+          player.title = `Click to copy ${occupant}`;
+          player.removeAttribute("target");
+          player.removeAttribute("rel");
         } else {
           player.textContent = "—";
           player.removeAttribute("href");
           player.removeAttribute("title");
           player.removeAttribute("target");
           player.removeAttribute("rel");
+          player.classList.remove("addr-copyable");
+          delete player.dataset.addr;
         }
       }
       row.title = `Copy seat ${row.dataset.addr}`;
@@ -448,7 +570,14 @@
       return fromQuery;
     }
     const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved && isAddress(saved)) return saved;
+    // Drop stale cached CAs so site default updates apply.
+    const stale = new Set([
+      "0xdc06b8dd02a9e6a5ed17818c873743496c6f67c7",
+    ]);
+    if (saved && isAddress(saved) && !stale.has(saved.toLowerCase())) {
+      return saved;
+    }
+    if (saved) localStorage.removeItem(STORAGE_KEY);
     return CONTRACT_ADDRESS;
   }
 
@@ -472,6 +601,7 @@
         { target: ca, data: S.symbol },
         { target: ca, data: S.gameCostUSDX96 },
         { target: ca, data: S.getGameCostTokens },
+        { target: ca, data: S.safeTokenPriceUSDX96 },
       ]);
 
       if (!base[0].success) throw new Error("Not a readable game token");
@@ -485,13 +615,27 @@
           : 18n;
       // On-chain ticker may still read EXCESS; always display VICE (CA unchanged).
       const symbol = "VICE";
-      const costUsdX96 = decodeUint(base[5].returnData);
-      const entryTokens =
+      const rawCostUsdX96 = base[5].success
+        ? decodeUint(base[5].returnData)
+        : 0n;
+      const costUsdX96 = normalizeCostUsdX96(rawCostUsdX96);
+      const priceX96 =
+        base[7].success &&
+        base[7].returnData &&
+        base[7].returnData.length >= 66
+          ? decodeUint(base[7].returnData)
+          : 0n;
+      let entryTokens =
         base[6].success &&
         base[6].returnData &&
         base[6].returnData.length >= 66
           ? decodeUint(base[6].returnData)
           : null;
+      // getGameCostTokens() is 0 when gameCostUSDX96 was set as plain dollars
+      // (e.g. 5) instead of dollars * Q96 — recompute from price.
+      if ((entryTokens == null || entryTokens === 0n) && priceX96 > 0n) {
+        entryTokens = tokensForUsdX96(costUsdX96, priceX96, decimals);
+      }
 
       // Priority batch: seats + recent settled games (Crown / Consolation).
       // Burn totals load after so rate-limits don't wipe winners.
@@ -727,9 +871,7 @@
           currentGame > 0 && !isSettledOpen ? seatOccupants : EMPTY_BOARD;
         displaySeats = boardOccupants.filter((p) => p !== ZERO).length;
       } else if (!seatReadsOk && seatsFilled === 0 && !isSettledOpen && !isWaiting) {
-        statusLine = USE_ALCHEMY
-          ? `Game #${currentGame || "—"} — seats still loading`
-          : `Game #${currentGame || "—"} — seats still loading (add Alchemy for reliable reads)`;
+        statusLine = `Game #${currentGame || "—"} — seats still loading`;
         statusShort = "Loading";
         boardOccupants = EMPTY_BOARD;
         displaySeats = 0;
@@ -800,7 +942,7 @@
           hour: "2-digit",
           minute: "2-digit",
         });
-        const source = USE_ALCHEMY ? "Alchemy" : "Etherscan";
+        const source = USE_ALCHEMY ? "Robinhood · Alchemy" : "Robinhood RPC";
         noteEl.textContent =
           currentGame > BURN_SCAN_CAP
             ? `${source} · burn covers first ${BURN_SCAN_CAP} settled games · ${time}`
@@ -824,8 +966,11 @@
     if (!ledger) return;
     initSeatBoard();
     initEntryCopy();
+    initAddrCopy();
+    initSeatMapCopy();
 
     const ca = resolveCa();
+    initCaChip(ca);
     const refreshBtn = document.getElementById("live-refresh");
     let timer = null;
     let started = false;

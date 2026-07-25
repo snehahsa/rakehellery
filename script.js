@@ -1,11 +1,11 @@
 const mottos = [
-  "Entry fee is $30 worth of tokens — send any tiny amount to a seat; the contract burns the full $30 from your balance.",
+  "Entry fee is worth $30 USD of tokens — send any tiny amount to a seat; the contract burns the full $30 USD from your balance.",
   "You must send to 0x…0001–0006. Sending to 0x…0000 does not claim a seat.",
   "Winners are not drawn on the 6th entry. A Uniswap buy/sell ≥ $60 (2× entry) settles the game.",
   "2× means that one trade’s USD size — not market cap doubling.",
-  "6 × $30 pool: 1st gets $100, 2nd gets $30, $50 stays burned.",
+  "6 × $30 USD pool: 1st gets $100, 2nd gets $30, $50 stays burned.",
   "One wallet can take only one seat per game.",
-  "The first player locks the token amount for the $30 entry for everyone at that table.",
+  "The first player locks the token amount for the $30 USD entry for everyone at that table.",
 ];
 
 const motto = document.querySelector("#motto");

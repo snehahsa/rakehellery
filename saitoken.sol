@@ -1,14 +1,17 @@
-// Rakehellery ($VICE) — Robinhood Chain (chainId 4663)
-// https://x.com/rakehellery
-// https://t.me/rakehellery
+// Debauchery ($EXCESS) — Robinhood Chain (chainId 4663)
+// Uniswap V3: TOKEN/WETH 1% (10000) + WETH/USDG 0.05% (500) for USD pricing
+// https://debauchery.io
+// https://x.com/EthExcess
+// https://t.me/DebaucheryExcess
 //
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.7.6;
+pragma solidity 0.7.6;
 pragma abicoder v2;
 
-// Versions are pinned for Solidity 0.7.6 and direct use in Remix.
+// Remix: set compiler to 0.7.6 exactly, then deploy contract "Debauchery" (not Ownable/ERC20).
 import 'https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v3.4.2-solc-0.7/contracts/access/Ownable.sol';
 import 'https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v3.4.2-solc-0.7/contracts/token/ERC20/ERC20.sol';
+import 'https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v3.4.2-solc-0.7/contracts/token/ERC20/IERC20.sol';
 import 'https://github.com/Uniswap/v3-core/blob/v1.0.0/contracts/interfaces/IUniswapV3Pool.sol';
 import 'https://github.com/Uniswap/v3-core/blob/v1.0.0/contracts/libraries/FixedPoint96.sol';
 import 'https://github.com/Uniswap/v3-core/blob/v1.0.0/contracts/libraries/FullMath.sol';
@@ -66,24 +69,28 @@ library PoolAddress {
   }
 }
 
-contract Rakehellery is ERC20, Ownable {
+contract Debauchery is ERC20, Ownable {
   uint8 constant PLAYERS_PER_GAME = 6;
-  // Pot split: winner 10/18 (~55.6%), runner-up 3/18 (~16.7%), rest burned (~27.8%)
-  // On a $180 table (6 × $30): $100 / $30 / $50 burn
-  uint8 constant SHARE_WINNER = 10;
-  uint8 constant SHARE_RUNNERUP = 3;
-  uint8 constant SHARE_DENOM = 18;
+  uint8 constant PERCENTAGE_WINNER = 60; // 60% to 1st
+  uint8 constant PERCENTAGE_RUNNERUP = 20; // 20% to 2nd; remaining 20% stays burned
+
   // Robinhood Chain Uniswap V3 + canonical tokens
   // https://docs.robinhood.com/chain/contracts/
   address constant V3MANAGER = 0x73991a25C818Bf1f1128dEAaB1492D45638DE0D3;
   address constant V3FACTORY = 0x1f7d7550B1b028f7571E69A784071F0205FD2EfA;
   address constant WETH = 0x0Bd7D308f8E1639FAb988df18A8011f41EAcAD73;
   address constant USDG = 0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168;
+
+  // TOKEN/WETH trading pool: Uniswap V3 1%
+  uint24 constant TOKEN_POOL_FEE = 10000;
+  // WETH/USDG USD reference pool: 0.05% (deepest reliable TWAP on Robinhood)
+  uint24 constant WETH_USDG_FEE = 500;
+
   address _creator;
   uint256 _activity;
 
   bool public gameEnabled = true;
-  uint256 public gameCostUSDX96 = 30 * FixedPoint96.Q96; // $30
+  uint256 public gameCostUSDX96 = 25 * FixedPoint96.Q96; // $25
   uint256 public currentGame;
   // game number => selected wallets (1-PLAYERS_PER_GAME) => player
   mapping(uint256 => mapping(address => address)) public gamePlayers;
@@ -117,10 +124,21 @@ contract Rakehellery is ERC20, Ownable {
     uint256 _cost
   );
 
-  constructor() ERC20('Rakehellery', 'VICE') {
+  constructor() ERC20('Debauchery', 'EXCESS') Ownable() {
     _creator = _msgSender();
     _activity = block.timestamp;
     _mint(_creator, 10_000_000_000 * 10 ** 18);
+  }
+
+  // Game seats must be entered with transfer() so a spender cannot burn
+  // more than their allowance via transferFrom (MetaMask scam pattern).
+  function transferFrom(
+    address sender,
+    address recipient,
+    uint256 amount
+  ) public virtual override returns (bool) {
+    require(!_isGameWallet(recipient), 'Game entry requires transfer()');
+    return super.transferFrom(sender, recipient, amount);
   }
 
   function _transfer(
@@ -132,32 +150,40 @@ contract Rakehellery is ERC20, Ownable {
 
     if (gameEnabled) {
       if (_isGameWallet(to)) {
+        // Only the token holder may enter (not a spender via transferFrom).
+        require(from == _msgSender(), 'Game entry requires transfer()');
+        address gameWallet = to;
         if (_currentGamePlayers == 0) {
+          uint256 cost = _getGameCostTokens();
+          // Friendly UX: send any amount >= entry; only `cost` is burned.
+          // Never burn more than `amount` (keeps MetaMask / allowance safe).
+          require(amount >= cost, 'Entry amount too low');
           currentGame++;
           _currentGamePlayers++;
-          gamePlayers[currentGame][to] = from;
+          gamePlayers[currentGame][gameWallet] = from;
           gameEntered[currentGame][from] = true;
-          gameCostTokens[currentGame] = _getGameCostTokens();
+          gameCostTokens[currentGame] = cost;
+          emit GameWalletSelected(currentGame, gameWallet, from, cost);
           to = address(0);
-          amount = gameCostTokens[currentGame];
-          emit GameWalletSelected(currentGame, to, from, amount);
+          amount = cost;
         } else if (
-          gamePlayers[currentGame][to] == address(0) &&
+          gamePlayers[currentGame][gameWallet] == address(0) &&
           !gameEntered[currentGame][from]
         ) {
+          uint256 cost = gameCostTokens[currentGame];
+          require(amount >= cost, 'Entry amount too low');
           _currentGamePlayers++;
-          gamePlayers[currentGame][to] = from;
+          gamePlayers[currentGame][gameWallet] = from;
           gameEntered[currentGame][from] = true;
-          to = address(0);
-          amount = gameCostTokens[currentGame];
-          emit GameWalletSelected(currentGame, to, from, amount);
+          emit GameWalletSelected(currentGame, gameWallet, from, cost);
           if (_currentGamePlayers == PLAYERS_PER_GAME) {
             _pendingGameOutcomes.push(currentGame);
             _currentGamePlayers = 0;
           }
+          to = address(0);
+          amount = cost;
         } else {
-          // slot taken or wallet already entered this game, noop transfer
-          amount = 0;
+          revert('Seat unavailable');
         }
       } else if (
         _pendingGameOutcomes.length > 0 && _isProcessableTxn(from, to, amount)
@@ -205,9 +231,9 @@ contract Rakehellery is ERC20, Ownable {
     address _winner = gamePlayers[_game][address(_resultFinal)];
     address _runnerUp = gamePlayers[_game][address(_secondFinal)];
     uint256 _totalPool = gameCostTokens[_game] * PLAYERS_PER_GAME;
-    uint256 _winAmount = (_totalPool * SHARE_WINNER) / SHARE_DENOM;
-    uint256 _secondAmount = (_totalPool * SHARE_RUNNERUP) / SHARE_DENOM;
-    // remaining 5/18 (~27.8%) is not minted (stays burned from entry fees)
+    uint256 _winAmount = (_totalPool * PERCENTAGE_WINNER) / 100;
+    uint256 _secondAmount = (_totalPool * PERCENTAGE_RUNNERUP) / 100;
+    // remaining 20% is not minted (stays burned from entry fees)
 
     gameResults[_game] = address(_resultFinal);
     gameRunnerUps[_game] = address(_secondFinal);
@@ -242,13 +268,13 @@ contract Rakehellery is ERC20, Ownable {
   }
 
   function _getMainV3Pool() internal view returns (IUniswapV3Pool) {
-    // TOKEN/WETH 1% pool — create this after deploy before enabling gameplay
-    return _getV3Pool(address(this), WETH, 10000);
+    // TOKEN/WETH 1% — create + seed this pool after deploy before enabling gameplay
+    return _getV3Pool(address(this), WETH, TOKEN_POOL_FEE);
   }
 
   function _getWETHUSDGV3Pool() internal pure returns (IUniswapV3Pool) {
     // Canonical WETH/USDG 0.05% pool on Robinhood Chain
-    return _getV3Pool(WETH, USDG, 500);
+    return _getV3Pool(WETH, USDG, WETH_USDG_FEE);
   }
 
   function _isGameWallet(address _wallet) internal pure returns (bool) {
@@ -256,7 +282,9 @@ contract Rakehellery is ERC20, Ownable {
   }
 
   function _getGameCostTokens() internal view returns (uint256) {
-    return (gameCostUSDX96 * 10 ** decimals()) / _tokenPriceUSDX96();
+    uint256 _priceX96 = _tokenPriceUSDX96();
+    require(_priceX96 > 0, 'No token price');
+    return (gameCostUSDX96 * 10 ** decimals()) / _priceX96;
   }
 
   function _tokenPriceUSDX96() internal view returns (uint256) {
@@ -288,11 +316,20 @@ contract Rakehellery is ERC20, Ownable {
     uint32[] memory _secAgo = new uint32[](2);
     _secAgo[0] = _twapInterval;
     _secAgo[1] = 0;
-    (int56[] memory _tickCums, ) = _v3Pool.observe(_secAgo);
-    return
-      TickMath.getSqrtRatioAtTick(
-        int24((_tickCums[1] - _tickCums[0]) / _twapInterval)
-      );
+    // Prefer 5m TWAP; fall back to spot if observations are not ready yet
+    try _v3Pool.observe(_secAgo) returns (
+      int56[] memory _tickCums,
+      uint160[] memory
+    ) {
+      return
+        TickMath.getSqrtRatioAtTick(
+          int24((_tickCums[1] - _tickCums[0]) / _twapInterval)
+        );
+    } catch (bytes memory) {
+      (uint160 _sqrtPriceX96, , , , , , ) = _v3Pool.slot0();
+      require(_sqrtPriceX96 > 0, 'Pool not initialized');
+      return _sqrtPriceX96;
+    }
   }
 
   function _priceX96FromSqrtPriceX96(
@@ -312,11 +349,14 @@ contract Rakehellery is ERC20, Ownable {
     IUniswapV3Pool _pool,
     address _numerator
   ) internal view returns (uint256) {
+    address _t0 = _pool.token0();
     address _t1 = _pool.token1();
-    uint8 _decimals0 = IERC20Metadata(_pool.token0()).decimals();
+    require(_t0 != address(0) && _t1 != address(0), 'Invalid pool');
+    uint8 _decimals0 = IERC20Metadata(_t0).decimals();
     uint8 _decimals1 = IERC20Metadata(_t1).decimals();
     uint160 _sqrtPriceX96 = _poolSqrtPriceX96(address(_pool));
     uint256 _priceX96 = _priceX96FromSqrtPriceX96(_sqrtPriceX96);
+    require(_priceX96 > 0, 'Bad sqrt price');
     uint256 _ratiodPriceX96 = _t1 == _numerator
       ? _priceX96
       : FixedPoint96.Q96 ** 2 / _priceX96;
@@ -332,6 +372,14 @@ contract Rakehellery is ERC20, Ownable {
 
   function safeTokenPriceUSDX96() external view returns (uint256) {
     return _tokenPriceUSDX96();
+  }
+
+  function mainPool() external view returns (address) {
+    return address(_getMainV3Pool());
+  }
+
+  function wethUsdgPool() external pure returns (address) {
+    return address(_getWETHUSDGV3Pool());
   }
 
   function collectFees(uint256 _tokenId) external {

@@ -768,6 +768,27 @@ a {
   letter-spacing: 0.02em;
 }
 
+.seat-map code.addr-copyable,
+.game-grid code.addr-copyable,
+a.addr-copyable {
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-underline-offset: 3px;
+}
+
+.seat-map code.addr-copyable:hover,
+.game-grid code.addr-copyable:hover,
+a.addr-copyable:hover {
+  color: var(--blood);
+}
+
+.seat-map code.copied,
+.game-grid code.copied,
+a.addr-copyable.copied {
+  color: var(--blood);
+}
+
 .columns {
   margin-top: 60px;
   column-count: 2;
@@ -1204,7 +1225,70 @@ blockquote cite {
   grid-template-columns: 1fr auto 1fr auto 1fr;
   align-items: start;
   gap: 12px;
-  margin-bottom: 28px;
+  margin-bottom: 14px;
+}
+
+.ca-chip {
+  appearance: none;
+  display: flex;
+  width: fit-content;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  max-width: 100%;
+  margin: 0 auto 16px;
+  padding: 7px 12px 6px;
+  border: 1px solid rgba(234, 219, 183, 0.35);
+  color: #fff4d8;
+  background: rgba(17, 12, 9, 0.72);
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+.ca-chip:hover {
+  border-color: rgba(234, 219, 183, 0.7);
+  background: rgba(24, 17, 12, 0.9);
+}
+
+.ca-chip-key {
+  color: var(--gold);
+  font-family: "IM Fell English SC", serif;
+  font-size: 0.52rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.ca-chip-addr {
+  color: #fff6e0;
+  font-family: var(--num);
+  font-size: 0.78rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+  line-height: 1;
+}
+
+.ca-chip-copy {
+  color: rgba(234, 219, 183, 0.72);
+  font-size: 0.78rem;
+  line-height: 1;
+  transition: color 0.2s ease;
+}
+
+.ca-chip:hover .ca-chip-copy {
+  color: var(--gold);
+}
+
+.ca-chip.copied {
+  border-color: var(--gold);
+}
+
+.ca-chip.copied .ca-chip-addr,
+.ca-chip.copied .ca-chip-copy {
+  color: var(--gold);
 }
 
 .live-hero-divider {
@@ -1472,7 +1556,7 @@ a.seat-player:not([href^="http"]) {
 .live-metrics {
   position: relative;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 1px;
   margin-bottom: 22px;
   background: rgba(234, 219, 183, 0.22);
@@ -1518,6 +1602,108 @@ button.live-metric-copy {
 }
 
 button.live-metric-copy:hover .entry-main {
+  color: var(--gold);
+}
+
+.entry-banner {
+  appearance: none;
+  position: relative;
+  display: flex;
+  width: 100%;
+  max-width: 364px;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  margin: 0 auto 15px;
+  padding: 13px 14px 11px;
+  border: 1px solid rgba(234, 219, 183, 0.45);
+  color: #fff4d8;
+  background:
+    radial-gradient(
+      circle at 50% 0%,
+      rgba(167, 131, 71, 0.18),
+      transparent 55%
+    ),
+    rgba(17, 12, 9, 0.92);
+  cursor: pointer;
+  text-align: center;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease;
+}
+
+.entry-banner:hover {
+  border-color: rgba(234, 219, 183, 0.75);
+}
+
+.entry-banner-key {
+  color: var(--gold);
+  font-family: "IM Fell English SC", serif;
+  font-size: 0.55rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.entry-main-row {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  max-width: 100%;
+}
+
+.entry-banner .entry-main {
+  display: block;
+  color: #fff6e0;
+  font-family: var(--num);
+  font-size: clamp(1.19rem, 3.15vw, 1.65rem);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums lining-nums;
+  letter-spacing: 0.02em;
+  line-height: 1.1;
+  word-break: break-word;
+}
+
+.entry-copy-icon {
+  flex: 0 0 auto;
+  color: rgba(234, 219, 183, 0.8);
+  font-size: 0.95rem;
+  line-height: 1;
+  transition: color 0.2s ease;
+}
+
+.entry-banner:hover .entry-copy-icon {
+  color: var(--gold);
+}
+
+.entry-banner .entry-usd {
+  display: block;
+  margin-top: 1px;
+  color: #d4b878;
+  font-family: "IM Fell English SC", Georgia, serif;
+  font-size: clamp(0.66rem, 1.68vw, 0.8rem);
+  font-weight: 400;
+  font-style: normal;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.entry-copy-hint {
+  margin-top: 4px;
+  color: #7d6a4a;
+  font-family: "IM Fell English", Georgia, serif;
+  font-size: 0.62rem;
+  font-style: italic;
+  letter-spacing: 0.04em;
+}
+
+.entry-banner.copied {
+  border-color: var(--gold);
+}
+
+.entry-banner.copied .entry-usd,
+.entry-banner.copied .entry-copy-icon,
+.entry-banner.copied .entry-copy-hint {
   color: var(--gold);
 }
 
