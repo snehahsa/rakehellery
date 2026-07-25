@@ -1635,8 +1635,17 @@ button.live-metric-copy:hover .entry-main {
   text-transform: uppercase;
 }
 
+.entry-main-row {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.45em 0.65em;
+  max-width: 100%;
+}
+
 .entry-banner .entry-main {
-  display: block;
+  display: inline;
   color: #fff6e0;
   font-family: var(--num);
   font-size: clamp(1.19rem, 3.15vw, 1.65rem);
@@ -1648,15 +1657,28 @@ button.live-metric-copy:hover .entry-main {
 }
 
 .entry-banner .entry-usd {
+  display: inline;
+  margin-top: 0;
+  color: #d4b878;
+  font-family: "IM Fell English", Georgia, serif;
+  font-size: clamp(0.58rem, 1.4vw, 0.72rem);
+  font-weight: 400;
+  font-style: italic;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  white-space: nowrap;
+}
+
+.entry-seat-hint {
   display: block;
   margin-top: 1px;
   color: #d4b878;
-  font-family: "IM Fell English SC", Georgia, serif;
+  font-family: "IM Fell English", Georgia, serif;
   font-size: clamp(0.66rem, 1.68vw, 0.8rem);
   font-weight: 400;
-  font-style: normal;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  font-style: italic;
+  letter-spacing: 0.03em;
+  text-transform: none;
 }
 
 .entry-round-note {

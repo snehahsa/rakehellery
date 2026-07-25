@@ -244,11 +244,7 @@
     const noteEl = document.getElementById("stat-entry-note");
     if (!box || !main || !usdEl) return;
 
-    const usdLabel =
-      costUsdX96 && costUsdX96 > 0n
-        ? `worth ${formatUsdFromX96(costUsdX96)} USD`
-        : "worth $30 USD";
-    usdEl.textContent = usdLabel;
+    usdEl.textContent = "(worth $30 please)";
 
     if (entryTokens != null && entryTokens > 0n) {
       let dec = BigInt(decimals);

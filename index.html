@@ -17,7 +17,7 @@
       href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=Libre+Baskerville:wght@400;700&family=UnifrakturCook:wght@700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./styles.css?v=46" />
+    <link rel="stylesheet" href="./styles.css?v=49" />
   </head>
   <body>
     <div class="paper-noise" aria-hidden="true"></div>
@@ -90,10 +90,15 @@
 
           <div class="entry-banner" id="stat-entry">
             <span class="entry-banner-key">Current entry fee</span>
-            <span class="entry-main" id="stat-entry-main">—</span>
-            <span class="entry-usd" id="stat-entry-usd">worth $30 USD</span>
+            <span class="entry-main-row">
+              <span class="entry-main" id="stat-entry-main">—</span>
+              <span class="entry-usd" id="stat-entry-usd">(worth $30 please)</span>
+            </span>
+            <span class="entry-seat-hint"
+              >please send to one of the open seats below</span
+            >
             <span class="entry-round-note" id="stat-entry-note"
-              >Actual fee is lower — lowered automatically to the exact amount.</span
+              >Actual fee is lower — the amount is auto lowered to the exact amount when transfer occurs.</span
             >
           </div>
 
@@ -520,6 +525,6 @@
     </footer>
 
     <script src="./script.js?v=7"></script>
-    <script src="./stats.js?v=34"></script>
+    <script src="./stats.js?v=35"></script>
   </body>
 </html>
