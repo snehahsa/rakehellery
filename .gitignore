@@ -6,6 +6,7 @@ test/deployer.key
 .env.*
 telegram-bot/.env
 telegram-bot/state.json
+telegram-bot-railway/
 
 # tooling
 .wrangler/
