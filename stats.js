@@ -227,8 +227,9 @@
     return formatCommaInt(amount / 10n ** dec);
   }
 
-  // Round UP to 2 significant digits (593039 → 600000, 5930039 → 6000000).
-  function roundUpDisplayTokens(whole) {
+  // Round UP to at most 2 significant digits.
+  // e.g. 23,900,000 → 24,000,000 ; 890,001 → 900,000 ; 5,930,039 → 6,000,000
+  function roundUpCleanTokens(whole) {
     if (whole <= 0n) return 0n;
     const s = whole.toString();
     if (s.length <= 2) return whole;
@@ -243,23 +244,26 @@
     const noteEl = document.getElementById("stat-entry-note");
     if (!box || !main || !usdEl) return;
 
-    usdEl.textContent = "(worth $30 please)";
+    const usd =
+      costUsdX96 != null && costUsdX96 > 0n
+        ? Number(costUsdX96 / (1n << 96n))
+        : 0;
+    usdEl.textContent = usd > 0 ? `(worth $${usd})` : "";
 
     if (entryTokens != null && entryTokens > 0n) {
       let dec = BigInt(decimals);
       if (dec <= 0n || dec > 36n) dec = 18n;
       const whole = entryTokens / 10n ** dec;
-      const rounded = roundUpDisplayTokens(whole);
-      main.textContent = `${formatCommaInt(rounded)} ${symbol}`;
+      const clean = roundUpCleanTokens(whole);
+      main.textContent = `${formatCommaInt(clean)} ${symbol}`;
       if (noteEl) {
         noteEl.textContent =
-          "Actual fee is lower — the amount is auto lowered to the exact amount when transfer occurs.";
+          "Rounded up for display. Send at least the exact lower fee — mid-game this is the locked fee for this table.";
       }
     } else {
-      main.textContent = "$30";
+      main.textContent = "—";
       if (noteEl) {
-        noteEl.textContent =
-          "Actual fee is lower — the amount is auto lowered to the exact amount when transfer occurs.";
+        noteEl.textContent = "Waiting for contract entry fee…";
       }
     }
   }
@@ -861,7 +865,28 @@
       setSeatDots(boardOccupants.map((p) => p !== ZERO));
       setSeatBoard(boardOccupants);
       setText("stat-status", statusShort);
-      setEntryDisplay(entryTokens, decimals, symbol, costUsdX96);
+
+      // Join fee: once a game has started, seats must pay gameCostTokens[game]
+      // (locked at seat 1). Live getGameCostTokens() only applies to a new table.
+      let joinTokens = entryTokens;
+      if (
+        currentGame > 0 &&
+        !isSettledOpen &&
+        seatsFilled > 0 &&
+        seatsFilled < PLAYERS
+      ) {
+        const lockedOut = await parallelCalls([
+          {
+            target: ca,
+            data: callData(S.gameCostTokens, pad32(currentGame)),
+          },
+        ]);
+        if (lockedOut[0]?.success) {
+          const locked = decodeUint(lockedOut[0].returnData);
+          if (locked > 0n) joinTokens = locked;
+        }
+      }
+      setEntryDisplay(joinTokens, decimals, symbol, costUsdX96);
       setAddrLink("stat-winner", winnerWallet);
       setAddrLink("stat-runner", runnerWallet);
       setText(

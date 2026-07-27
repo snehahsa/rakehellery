@@ -17,7 +17,7 @@
       href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=Libre+Baskerville:wght@400;700&family=UnifrakturCook:wght@700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./styles.css?v=54" />
+    <link rel="stylesheet" href="./styles.css?v=57" />
   </head>
   <body>
     <div class="paper-noise" aria-hidden="true"></div>
@@ -64,7 +64,7 @@
             <div class="live-hero">
               <span class="live-hero-key">Seats</span>
               <span class="live-hero-val" id="stat-seats">—</span>
-              <div class="seat-dots" id="seat-dots" aria-hidden="true">
+              <div class="seat-dots" id="seat-dots" aria-label="Seat fill" aria-hidden="true">
                 <i></i><i></i><i></i><i></i><i></i><i></i>
               </div>
             </div>
@@ -92,13 +92,13 @@
             <span class="entry-banner-key">Current entry fee</span>
             <span class="entry-main-row">
               <span class="entry-main" id="stat-entry-main">—</span>
-              <span class="entry-usd" id="stat-entry-usd">(worth $30 please)</span>
+              <span class="entry-usd" id="stat-entry-usd">(worth $30)</span>
             </span>
             <span class="entry-seat-hint"
               >please send to one of the open seats below to join</span
             >
             <span class="entry-round-note" id="stat-entry-note"
-              >Actual fee is lower — the amount is auto lowered to the exact amount when transfer occurs.</span
+              >Rounded up for display. Exact lower fee is taken automatically on transfer.</span
             >
           </div>
 
@@ -517,6 +517,6 @@
     </footer>
 
     <script src="./script.js?v=7"></script>
-    <script src="./stats.js?v=41"></script>
+    <script src="./stats.js?v=45"></script>
   </body>
 </html>
