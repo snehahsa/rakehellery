@@ -118,40 +118,6 @@
     return `${addr.slice(0, 6)}…${addr.slice(-4)}`;
   }
 
-  function shortCa(addr) {
-    if (!addr || addr === ZERO) return "—";
-    return `${addr.slice(0, 6)}…${addr.slice(-8)}`;
-  }
-
-  function initCaChip(ca) {
-    const btn = document.getElementById("ca-chip");
-    const addrEl = document.getElementById("ca-chip-addr");
-    if (!btn || !addrEl || !isAddress(ca)) return;
-    addrEl.textContent = shortCa(ca);
-    btn.dataset.addr = ca;
-    btn.title = `Click to copy ${ca}`;
-    if (btn.dataset.bound) return;
-    btn.dataset.bound = "1";
-    btn.addEventListener("click", async () => {
-      const addr = btn.dataset.addr;
-      if (!addr) return;
-      const ok = await copyText(addr);
-      if (!ok) return;
-      btn.classList.add("copied");
-      const icon = btn.querySelector(".ca-chip-copy");
-      const prev = addrEl.textContent;
-      const prevIcon = icon?.textContent || "⧉";
-      addrEl.textContent = "Copied";
-      if (icon) icon.textContent = "✓";
-      clearTimeout(btn._copyTimer);
-      btn._copyTimer = setTimeout(() => {
-        btn.classList.remove("copied");
-        addrEl.textContent = prev;
-        if (icon) icon.textContent = prevIcon;
-      }, 1100);
-    });
-  }
-
   function explorerUrl(addr) {
     return `${EXPLORER_URL}/address/${addr}`;
   }
@@ -921,7 +887,6 @@
     initSeatMapCopy();
 
     const ca = resolveCa();
-    initCaChip(ca);
     const refreshBtn = document.getElementById("live-refresh");
     let timer = null;
     let started = false;
