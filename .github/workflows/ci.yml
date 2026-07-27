@@ -1,0 +1,13 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  ok:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pass
+        run: echo "ok"
