@@ -14,7 +14,7 @@
   const STORAGE_KEY = "rakehellery-ca";
   const ALCHEMY_KEY = "rakehellery-alchemy";
   // Change this when the real CA is live. Optional override: ?ca=0x...
-  const CONTRACT_ADDRESS = "0xa59565957a93882253647e150d2D8FA43F63033e";
+  const CONTRACT_ADDRESS = "0xC5C2B9366Fa689D31d9093BA16E1D158cA9Ba6d4";
   // Constructor mint; net burn = INITIAL − totalSupply when costs work on-chain.
   const INITIAL_SUPPLY = 10_000_000_000n * 10n ** 18n;
   // After settlement: 60% 1st + 20% 2nd reminted; 20% stays burned.
@@ -506,6 +506,7 @@
     // Drop stale cached CAs so site default updates apply.
     const stale = new Set([
       "0xdc06b8dd02a9e6a5ed17818c873743496c6f67c7",
+      "0xa59565957a93882253647e150d2d8fa43f63033e",
     ]);
     if (saved && isAddress(saved) && !stale.has(saved.toLowerCase())) {
       return saved;
